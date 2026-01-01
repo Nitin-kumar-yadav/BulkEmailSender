@@ -23,15 +23,15 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    otp: {
+    Otp: {
         type: Number,
         default: null,
         index: true
     },
-    isOtpExpired: {
-        type: Boolean,
-        default: false
-    }
+    OtpExpiry: {
+        type: Date,
+        default: null
+    },
 
 }, { timestamps: true, strictQuery: true });
 
