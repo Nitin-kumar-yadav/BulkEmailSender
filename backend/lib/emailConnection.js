@@ -33,5 +33,6 @@ export const emailConnection = async (otp, email) => {
         console.log(error);
         throw error;
     }
+    return true;
 
 }
