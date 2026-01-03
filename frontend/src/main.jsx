@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 
 
+export const mainUrl = import.meta.env.VITE_BACKEND_URL
 const root = document.getElementById('root')
 if (root) {
   createRoot(root).render(

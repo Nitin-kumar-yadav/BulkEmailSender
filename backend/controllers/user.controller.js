@@ -43,9 +43,9 @@ export const userSignup = async (req, res) => {
         });
 
         const emailSent = await emailConnection(otp, Email);
-        if (emailSent != true) {
+        if (emailSent.rejected) {
             await UserModel.findByIdAndDelete(newUser._id);
-            return res.status(400).json({ message: "Failed to send OTP" });
+            return res.status(400).json({ message: "Invalid email" });
         }
 
         return res.status(200).json({

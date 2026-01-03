@@ -8,7 +8,7 @@ router.post('/signup', userSignup)
 router.post('/signin', userSignin)
 router.get('/logout', logout)
 router.post('/otp-verification', otpVerify)
-router.get('/check', protectRoute, (req, res) => {
+router.get('/checkAuth', protectRoute, (req, res) => {
     return res.status(200).json(req.user)
 })
 

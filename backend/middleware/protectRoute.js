@@ -11,7 +11,7 @@ const protectRoute = async (req, res, next) => {
         })
     }
     try {
-        const token = req.cookies.token;
+        const token = req.cookies?.token;
         if (!token) {
             return res.status(401).json({
                 message: "Unauthorized"
@@ -24,7 +24,7 @@ const protectRoute = async (req, res, next) => {
             })
         }
 
-        const user = await UserModel.findById(decoded.userId).select("-Password")
+        const user = await UserModel.findById(decoded.userId).select("Name Email _id")
         if (!user) {
             return res.status(401).json({
                 message: "Unauthorized user"

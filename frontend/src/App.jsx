@@ -6,6 +6,7 @@ import Login from './screen/Login';
 import Signup from './screen/Signup';
 import Dashboard from './admin/Dashboard';
 import Navbar from './screen/Navbar';
+import { Verification } from './screen/Verification';
 
 const App = () => {
     useEffect(() => {
@@ -19,6 +20,7 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/verify-otp" element={<Verification />} />
             </Routes>
         </>
     )

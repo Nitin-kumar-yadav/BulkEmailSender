@@ -20,9 +20,9 @@ export const emailConnection = async (otp, email) => {
     })
     await transporter.verify();
     console.log("Email connection verified");
-
+    let info = null;
     try {
-        const info = await transporter.sendMail({
+        info = await transporter.sendMail({
             from: process.env.EMAIL,
             to: email,
             subject: "OTP Verification",
@@ -33,6 +33,6 @@ export const emailConnection = async (otp, email) => {
         console.log(error);
         throw error;
     }
-    return true;
+    return info;
 
 }
