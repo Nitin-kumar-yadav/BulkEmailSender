@@ -16,6 +16,9 @@ export default defineConfig({
         },
         background: {
           secondary: 'var(--color-secondary)',
+          primary: 'var(--color-primary)',
+          tertiary: 'var(--color-tertiary)',
+          quaternary: 'var(--color-quaternary)',
         },
         text: {
           secondary: 'var(--color-secondary)',

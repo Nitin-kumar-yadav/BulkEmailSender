@@ -12,7 +12,16 @@
 
 .dark {
     @apply bg-gray-800 text-white;
+
     --bg-primary: #313647;
+    --bg-secondary: #b4b4b4;
+    --bg-tertiary: #A3B087;
+    --bg-quaternary: #FFF8D4;
+}
+
+.light {
+    @apply bg-gray-200 text-black;
+    --bg-primary: #d3d3d3;
     --bg-secondary: #435663;
     --bg-tertiary: #A3B087;
     --bg-quaternary: #FFF8D4;
