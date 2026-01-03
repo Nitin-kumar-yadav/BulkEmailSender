@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { applySavedTheme } from './theme/theme';
 import { Route, Routes } from 'react-router-dom';
-import Home from './components/Home';
-import Login from './components/Login';
-import Signup from './components/Signup';
-import Dashboard from './components/Dashboard';
-import Navbar from './components/Navbar';
+import Home from './screen/Home';
+import Login from './screen/Login';
+import Signup from './screen/Signup';
+import Dashboard from './admin/Dashboard';
+import Navbar from './screen/Navbar';
 
 const App = () => {
     useEffect(() => {
