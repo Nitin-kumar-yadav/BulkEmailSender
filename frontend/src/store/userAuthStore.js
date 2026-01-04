@@ -7,16 +7,7 @@ import { mainUrl } from "../main";
 axios.defaults.withCredentials = true;
 
 export const useUserAuthStore = create((set) => ({
-    authUser: (() => {
-        const authUser = localStorage.getItem('authUser');
-        try {
-            return authUser && authUser !== 'undefined' ? JSON.parse(authUser) : null;
-        } catch (error) {
-            throw new Error(error.response?.data?.message || "Something went wrong");
-
-        }
-    })(),
-
+    authUser: JSON.parse(localStorage.getItem('authUser')) || null,
     isCheckingAuth: false,
     isSignup: false,
     isLogin: false,
@@ -25,13 +16,22 @@ export const useUserAuthStore = create((set) => ({
     checkAuth: async () => {
         set({ isCheckingAuth: true });
         try {
-            const res = await axios.get(`${mainUrl}/v1/api/checkAuth`);
-            set({ authUser: res.data?.user });
-            localStorage.setItem('authUser', JSON.stringify(res.data?.user));
+            const res = await axios.get(`${mainUrl}/v1/api/checkAuth`, {
+                withCredentials: true,
+            });
+
+            const user = res.data;
+            set({ authUser: user });
+
+            if (user) {
+                localStorage.setItem('authUser', JSON.stringify(user));
+            } else {
+                localStorage.removeItem('authUser');
+            }
         } catch (error) {
             set({ authUser: null });
             localStorage.removeItem('authUser');
-            throw new Error(error.response?.data?.message || "Something went wrong");
+            console.error("Auth check failed:", error.response?.data?.message);
         } finally {
             set({ isCheckingAuth: false });
         }
@@ -53,12 +53,23 @@ export const useUserAuthStore = create((set) => ({
     login: async (userData) => {
         set({ isLogin: true });
         try {
-            const res = await axios.post(`${mainUrl}/v1/api/login`, userData);
-            set({ authUser: res.data?.user });
-            localStorage.setItem('authUser', JSON.stringify(res.data?.user));
-            toast.success(`${res.data?.user?.Name}, Welcome back!`);
+            const res = await axios.post(`${mainUrl}/v1/api/signin`, userData, {
+                withCredentials: true,
+            });
+
+            const user = res?.data;
+
+            set({ authUser: user });
+            localStorage.setItem('authUser', JSON.stringify(user));
+
+            toast.success(`${user?.Name || "User"}, Welcome back!`);
+
+            return { success: true, data: user };
+
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Login failed");
+            const message = error?.response?.data?.message || "Login failed";
+            toast.error(message);
+            return { success: false, error: message };
         } finally {
             set({ isLogin: false });
         }
@@ -68,8 +79,8 @@ export const useUserAuthStore = create((set) => ({
         set({ isOtpVerify: true });
         try {
             const res = await axios.post(`${mainUrl}/v1/api/otpVerify`, userData);
-            set({ authUser: res.data?.user });
-            localStorage.setItem('authUser', JSON.stringify(res.data?.user));
+            set({ authUser: res.data });
+            localStorage.setItem('authUser', JSON.stringify(res.data));
             toast.success(`Account verified successfully!`);
         } catch (error) {
             toast.error(error?.response?.data?.message || "OTP Verification failed");
@@ -80,10 +91,10 @@ export const useUserAuthStore = create((set) => ({
 
     logout: async () => {
         try {
-            await axios.post(`${mainUrl}/v1/api/logout`);
+            const res = await axios.get(`${mainUrl}/v1/api/logout`);
             set({ authUser: null });
             localStorage.removeItem('authUser');
-            toast.success("Logged out");
+            toast.success(res?.data?.message);
         } catch (error) {
             toast.error(error?.response?.data?.message || "Logout failed");
             set({ authUser: null });
