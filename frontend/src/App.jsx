@@ -8,6 +8,8 @@ import Dashboard from "./admin/Dashboard";
 import Navbar from "./screen/Navbar";
 import { Verification } from "./screen/Verification";
 import { useUserAuthStore } from "./store/userAuthStore";
+import Compose from "./admin/Compose";
+import Settings from "./admin/Settings";
 
 const App = () => {
     const { checkAuth, authUser, isCheckingAuth } = useUserAuthStore();
@@ -41,6 +43,14 @@ const App = () => {
                 <Route
                     path="/dashboard"
                     element={authUser ? <Dashboard /> : <Navigate to="/login" />}
+                />
+                <Route
+                    path="/compose"
+                    element={authUser ? <Compose /> : <Navigate to="/login" />}
+                />
+                <Route
+                    path="/settings"
+                    element={authUser ? <Settings /> : <Navigate to="/login" />}
                 />
             </Routes>
         </>

@@ -23,6 +23,8 @@ const Navbar = () => {
                             authUser ? (
                                 <>
                                     <Link to="/dashboard" className="nav-link font-comfortaa">Dashboard</Link>
+                                    <Link to="/settings" className="nav-link font-comfortaa">Settings</Link>
+                                    <Link to="/compose" className="nav-link font-comfortaa">Compose</Link>
                                     <button onClick={handleLogout} className="nav-link font-comfortaa cursor-pointer text-red-500">Logout</button>
                                 </>
                             ) : (
