@@ -159,3 +159,42 @@ export const otpVerify = async (req, res) => {
         });
     }
 };
+
+export const resendOtp = async (req, res) => {
+    const { _id } = req.query;
+
+    try {
+        const user = await UserModel.findById(_id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (user.isVerified) {
+            return res.status(400).json({ message: "User already verified" });
+        }
+
+        if (user.OtpExpiry > Date.now()) {
+            return res.status(400).json({ message: "OTP already sent" });
+        }
+
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+        const otpExpiry = Date.now() + 60 * 60 * 1000; // 1 hour
+
+        user.Otp = otp;
+        user.OtpExpiry = otpExpiry;
+        await user.save();
+
+        const emailSent = await emailConnection(otp, user.Email);
+
+        if (emailSent.rejected && emailSent.rejected.length > 0) {
+            return res.status(400).json({ message: "Invalid email address" });
+        }
+
+        return res.status(200).json({ message: "OTP sent successfully" });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Resend OTP failed",
+            error: error.message,
+        });
+    }
+}

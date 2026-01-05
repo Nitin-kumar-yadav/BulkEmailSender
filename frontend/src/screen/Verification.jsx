@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useUserAuthStore } from '../store/userAuthStore';
 import { Navigate, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export const Verification = () => {
-    const { isOtpVerify, otpVerify, authUser } = useUserAuthStore();
+    const { isOtpVerify, otpVerify, authUser, resendOtp } = useUserAuthStore();
     const navigate = useNavigate();
 
     const [userData, setUserData] = useState({
@@ -25,6 +26,17 @@ export const Verification = () => {
     if (authUser && authUser.isVerified) {
         return <Navigate to="/dashboard" replace />;
     }
+
+    const handleResendOtp = async () => {
+        try {
+            const success = await resendOtp(userData);
+            if (success) {
+                toast.success("OTP sent successfully!");
+            }
+        } catch (error) {
+            console.error("Resend OTP failed:", error);
+        }
+    };
 
     return (
         <div className="h-[calc(100vh-5rem)] flex items-center justify-center px-4 ">
@@ -64,7 +76,7 @@ export const Verification = () => {
                     <button
                         type="button"
                         className="w-full text-blue-600 hover:underline font-space-grotesk mt-2"
-                        onClick={() => console.log("Resend logic here")}
+                        onClick={() => handleResendOtp()}
                     >
                         Resend OTP
                     </button>

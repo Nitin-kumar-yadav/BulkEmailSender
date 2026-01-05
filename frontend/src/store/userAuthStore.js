@@ -13,6 +13,8 @@ export const useUserAuthStore = create((set, get) => ({
     isLogin: false,
     isOtpVerify: false,
     isUserId: JSON.parse(localStorage.getItem('userId')) || null,
+    isResendOtp: false,
+
 
     checkAuth: async () => {
         set({ isCheckingAuth: true });
@@ -42,7 +44,7 @@ export const useUserAuthStore = create((set, get) => ({
         set({ isSignup: true });
         try {
             const res = await axios.post(`${mainUrl}/v1/api/signup`, userData);
-            toast.success("Please verify OTP.");
+            toast.success(res?.data?.message);
             set({ isSignup: false });
             set({ isUserId: res.data.userId });
             console.log(res)
@@ -64,9 +66,7 @@ export const useUserAuthStore = create((set, get) => ({
 
             set({ authUser: user });
             localStorage.setItem('authUser', JSON.stringify(user));
-
-            toast.success(`${user?.Name || "User"}, Welcome back!`);
-
+            toast.success(res?.data?.message);
             return { success: true, data: user };
 
         } catch (error) {
@@ -92,6 +92,21 @@ export const useUserAuthStore = create((set, get) => ({
             toast.error(error?.response?.data?.message || "OTP Verification failed");
         } finally {
             set({ isOtpVerify: false });
+        }
+    },
+
+    resendOtp: async (userData) => {
+        set({ isResendOtp: true });
+        const userId = get().isUserId;
+        try {
+            const res = await axios.post(`${mainUrl}/v1/api/resend-otp?_id=${userId}`, userData, {
+                withCredentials: true,
+            });
+            toast.success(res?.data?.message);
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Resend OTP failed");
+        } finally {
+            set({ isResendOtp: false });
         }
     },
 

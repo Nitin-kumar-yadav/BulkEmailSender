@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, Navigate, } from 'react-router-dom';
+import { Link, Navigate, useNavigate, } from 'react-router-dom';
 import { useUserAuthStore } from '../store/userAuthStore';
 
 const Login = () => {
@@ -10,12 +10,15 @@ const Login = () => {
 
   const { isLogin, login } = useUserAuthStore();
 
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      login(userData);
-      <Navigate to="/dashboard" />
+      let res = await login(userData);
+      if (res?.success) {
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.error(error);
     }
