@@ -25,10 +25,10 @@ export const userSignup = async (req, res) => {
     try {
         const existingUser = await UserModel.findOne({ Email });
         if (existingUser) {
-            return res.status(400).json({ message: "User already exists" });
+            return res.status(409).json({ message: "User already exists" });
         }
 
-        const otp = Math.floor(100000 + Math.random() * 900000);
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
         const otpExpiry = Date.now() + 60 * 60 * 1000; // 1 hour
 
         const hashedPassword = await bcrypt.hash(Password, 10);
@@ -43,19 +43,20 @@ export const userSignup = async (req, res) => {
         });
 
         const emailSent = await emailConnection(otp, Email);
-        if (emailSent.rejected) {
+
+        if (emailSent.rejected && emailSent.rejected.length > 0) {
             await UserModel.findByIdAndDelete(newUser._id);
-            return res.status(400).json({ message: "Invalid email" });
+            return res.status(400).json({ message: "Invalid email address" });
         }
 
         return res.status(200).json({
             message: "OTP sent successfully",
-            _id: newUser._id,
+            userId: newUser._id,
         });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             message: "Internal server error",
-            error: error.message,
         });
     }
 };

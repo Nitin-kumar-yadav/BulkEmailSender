@@ -6,12 +6,13 @@ import { mainUrl } from "../main";
 // Configure axios defaults so you don't have to repeat withCredentials
 axios.defaults.withCredentials = true;
 
-export const useUserAuthStore = create((set) => ({
+export const useUserAuthStore = create((set, get) => ({
     authUser: JSON.parse(localStorage.getItem('authUser')) || null,
     isCheckingAuth: false,
     isSignup: false,
     isLogin: false,
     isOtpVerify: false,
+    isUserId: JSON.parse(localStorage.getItem('userId')) || null,
 
     checkAuth: async () => {
         set({ isCheckingAuth: true });
@@ -43,6 +44,8 @@ export const useUserAuthStore = create((set) => ({
             const res = await axios.post(`${mainUrl}/v1/api/signup`, userData);
             toast.success("Please verify OTP.");
             set({ isSignup: false });
+            set({ isUserId: res.data.userId });
+            console.log(res)
             return res.data;
         } catch (error) {
             toast.error(error?.response?.data?.message || "Signup failed");
@@ -77,8 +80,11 @@ export const useUserAuthStore = create((set) => ({
 
     otpVerify: async (userData) => {
         set({ isOtpVerify: true });
+        const userId = get().isUserId;
         try {
-            const res = await axios.post(`${mainUrl}/v1/api/otpVerify`, userData);
+            const res = await axios.post(`${mainUrl}/v1/api/otp-verification?_id=${userId}`, userData, {
+                withCredentials: true,
+            });
             set({ authUser: res.data });
             localStorage.setItem('authUser', JSON.stringify(res.data));
             toast.success(`Account verified successfully!`);

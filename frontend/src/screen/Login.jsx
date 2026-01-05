@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Link, useNavigate,  } from 'react-router-dom';
+import { Link, Navigate, } from 'react-router-dom';
 import { useUserAuthStore } from '../store/userAuthStore';
 
 const Login = () => {
-  const navigate = useNavigate();
   const [userData, setUserData] = useState({
     Email: '',
     Password: '',
@@ -16,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       login(userData);
-      navigate("/dashboard");
+      <Navigate to="/dashboard" />
     } catch (error) {
       console.error(error);
     }
