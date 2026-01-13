@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Card from './Card'
+import Report from './Report'
 
 const Dashboard = () => {
   return (
@@ -13,6 +14,9 @@ const Dashboard = () => {
         <Card />
         <Card />
         <Card />
+      </div>
+      <div className="flex flex-wrap justify-end gap-5 mx-5 mt-2">
+        <Report />
       </div>
     </div>
   )
