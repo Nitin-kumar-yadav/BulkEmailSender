@@ -43,3 +43,30 @@ export const emailController = async (req, res) => {
         });
     }
 };
+
+
+export const getEmailReportData = async (req, res) => {
+    const userId = req.user._id;
+    try {
+        if (!userId) {
+            return res.status(400).json({
+                message: "Invalid user"
+            });
+        }
+        const emailInfoData = await EmailInfo.findOne({ userId });
+        if (!emailInfoData) {
+            return res.status(400).json({
+                message: "Email info not found"
+            });
+        }
+        return res.status(200).json({
+            message: "Email info found",
+            data: emailInfoData
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+}
