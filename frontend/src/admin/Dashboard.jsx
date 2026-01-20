@@ -12,8 +12,6 @@ const Dashboard = () => {
       </div>
       <div className='flex flex-wrap justify-center gap-5 mx-5 mt-2'>
         <Card />
-        <Card />
-        <Card />
       </div>
       <div className="flex flex-wrap justify-end gap-5 mx-5 mt-2">
         <Report />

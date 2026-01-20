@@ -60,8 +60,8 @@ export const getEmailReportData = async (req, res) => {
             });
         }
         return res.status(200).json({
-            message: "Email info found",
-            data: emailInfoData
+            message: "Email Report Data",
+            data: emailInfoData.emailMessages
         });
     }
     catch (error) {
