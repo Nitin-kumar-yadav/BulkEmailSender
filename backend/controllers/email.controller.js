@@ -70,3 +70,22 @@ export const getEmailReportData = async (req, res) => {
         });
     }
 }
+
+
+//:TODO: Delete All Email and Message
+
+export const deleteAllEmailData = async (req, res) => {
+    const userId = req.user._id;
+    try {
+        if (!userId) {
+            return res.status(400).json({ message: "Invaild User" })
+        }
+        let deleteAllEmailData = await EmailInfo.deleteMany({ userId })
+        if (!deleteAllEmailData) {
+            return res.status(400).json({ message: "Email info not found" })
+        }
+        return res.status(200).json({ message: "All email messages deleted successfully", data: deleteAllEmailData })
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}

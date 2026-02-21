@@ -3,7 +3,7 @@ import { logout, otpVerify, resendOtp, userSignin, userSignup } from "../control
 import protectRoute from "../middleware/protectRoute.js"
 import { extractFileData } from "../controllers/file.controller.js";
 import { uploadCSVExcel } from "../middleware/upload.js";
-import { emailController, getEmailReportData } from "../controllers/email.controller.js";
+import { deleteAllEmailData, emailController, getEmailReportData } from "../controllers/email.controller.js";
 import { composedController } from "../controllers/composed.controller.js";
 
 const router = express.Router();
@@ -20,6 +20,6 @@ router.post('/upload-file', protectRoute, uploadCSVExcel, extractFileData)
 router.post('/email-pass', protectRoute, emailController)
 router.post('/composed', protectRoute, composedController)
 router.get('/email-report', protectRoute, getEmailReportData)
-
+router.delete('/delete-all-email', protectRoute, deleteAllEmailData)
 
 export default router;

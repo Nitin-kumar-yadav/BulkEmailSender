@@ -35,5 +35,26 @@ export const serviceStore = create((set) => ({
                 loading: false
             });
         }
+    },
+    deleteAllEmailData: async () => {
+        set({ loading: true, error: null });
+
+        try {
+            const res = await axios.delete(
+                `${mainUrl}/v1/api/delete-all-email`,
+                { withCredentials: true }
+            );
+            set({
+                loading: false
+            });
+            toast.success(res?.data?.message);
+        } catch (err) {
+            console.error("Failed to delete all email data:", err?.response?.data?.message);
+
+            set({
+                error: err?.response?.data?.message || "Something went wrong",
+                loading: false
+            });
+        }
     }
 }));

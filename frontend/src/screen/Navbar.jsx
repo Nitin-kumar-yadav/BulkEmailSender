@@ -7,16 +7,24 @@ import { HiOutlineMailOpen } from "react-icons/hi";
 import { FiSettings } from "react-icons/fi";
 import { ImUser } from "react-icons/im";
 import { CiLogout } from "react-icons/ci";
+import { RiChatDeleteLine } from "react-icons/ri";
+import { serviceStore } from "../store/serviceStore";
 
 const Navbar = () => {
 
     const { authUser, isCheckingAuth, logout } = useUserAuthStore();
+    const { deleteAllEmailData } = serviceStore();
 
     if (isCheckingAuth) {
         return <div>Loading...</div>
     }
     const handleLogout = async () => {
         await logout();
+    }
+    const handleDeleteAllEmailData = async () => {
+        if (confirm("Are you sure you want to delete all email data?")) {
+            await deleteAllEmailData();
+        }
     }
 
     return (
@@ -52,12 +60,15 @@ const Navbar = () => {
                                 </li>
                             </ul>
                         </div>
-                        <div className="fixed left-0 bottom-0 w-1/6  h-30 flex flex-col gap-2 p-3">
+                        <div className="fixed left-0 bottom-10 w-1/6  h-30 flex flex-col gap-2 p-3">
                             <div className="border h-[48%] w-full flex justify-start gap-3 items-start p-2 rounded-xl hover:bg-(--bg-secondary) transition-all ease-in-out">
                                 <span><ImUser size={25} /></span>{authUser.Name}
                             </div>
                             <div className=" h-[48%] w-full ">
                                 <button onClick={handleLogout} className="cursor-pointer border w-full flex justify-start gap-2 h-full p-2 rounded-xl hover:bg-[#261b2d] hover:text-red-500 transition-all ease-in-out"> <CiLogout size={25} /><span>Logout</span></button>
+                            </div>
+                            <div className=" h-[48%] w-full ">
+                                <button onClick={handleDeleteAllEmailData} className="cursor-pointer border w-full flex justify-start gap-2 h-full p-2 rounded-xl hover:bg-[#261b2d] hover:text-red-500 transition-all ease-in-out"> <RiChatDeleteLine size={25} /><span>Delete All Emails</span></button>
                             </div>
                         </div>
                     </div>
