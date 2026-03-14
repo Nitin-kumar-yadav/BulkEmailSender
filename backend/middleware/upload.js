@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    const userId = req.query._id;
+    const userId = req.user._id;
 
     if (!userId) {
       return cb(new Error("User ID is required"));

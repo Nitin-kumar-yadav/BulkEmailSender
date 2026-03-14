@@ -42,15 +42,15 @@ const App = () => {
                 <Route path="/verify-otp" element={<Verification />} />
                 <Route
                     path="/dashboard"
-                    element={authUser ? <Dashboard /> : <Navigate to="/login" />}
+                    element={authUser ? <Dashboard /> : <Navigate to="/dashboard" />}
                 />
                 <Route
                     path="/compose"
-                    element={authUser ? <Compose /> : <Navigate to="/login" />}
+                    element={authUser ? <Compose /> : <Navigate to="/compose" />}
                 />
                 <Route
                     path="/settings"
-                    element={authUser ? <Settings /> : <Navigate to="/login" />}
+                    element={authUser ? <Settings /> : <Navigate to="/settings" />}
                 />
             </Routes>
         </>
