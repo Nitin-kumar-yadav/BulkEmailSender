@@ -56,7 +56,7 @@ const Navbar = () => {
                                     <span><HiOutlineMailOpen size={25} /></span><Link className="w-full" to={'/compose'} >Composed</Link>
                                 </li>
                                 <li className="flex gap-2 w-full text-xl font-space-grotesk p-3 items-center border rounded-2xl hover:bg-(--bg-secondary) transition-all ease-in-out">
-                                    <span><FiSettings size={25} /></span><Link className="w-full" to={'/setting'} >Setting</Link>
+                                    <span><FiSettings size={25} /></span><Link className="w-full" to={'/settings'} >Setting</Link>
                                 </li>
                             </ul>
                         </div>

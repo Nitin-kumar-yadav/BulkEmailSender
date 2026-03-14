@@ -6,11 +6,11 @@ import fs from "fs";
 
 export const extractFileData = async (req, res) => {
     try {
-        if (!req.user?._id) {
+        const userId = req.user._id;
+        if (!userId) {
             return res.status(401).json({ message: "Unauthorized" });
         }
 
-        const userId = req.user._id;
 
         if (!req.file) {
             return res.status(400).json({ message: "File is required" });

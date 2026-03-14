@@ -56,5 +56,52 @@ export const serviceStore = create((set) => ({
                 loading: false
             });
         }
+    },
+    uploadEmailMessage: async (data) => {
+        set({ loading: true, error: null });
+
+        try {
+            const res = await axios.post(
+                `${mainUrl}/v1/api/composed`,
+                data,
+                { withCredentials: true }
+            );
+            set({
+                loading: false
+            });
+            toast.success(res?.data?.message);
+        } catch (err) {
+            console.error("Failed to upload email message:", err?.response?.data?.message);
+            toast.error(err?.response?.data?.message);
+
+            set({
+                error: err?.response?.data?.message || "Something went wrong",
+                loading: false
+            });
+        }
+    },
+
+    uploadFile: async (data) => {
+        set({ loading: true, error: null });
+
+        try {
+            const res = await axios.post(
+                `${mainUrl}/v1/api/upload-file`,
+                data,
+                { withCredentials: true }
+            );
+            set({
+                loading: false
+            });
+            toast.success(res?.data?.message);
+        } catch (err) {
+            console.error("Failed to upload file:", err?.response?.data?.message);
+            toast.error(err?.response?.data?.message);
+
+            set({
+                error: err?.response?.data?.message || "Something went wrong",
+                loading: false
+            });
+        }
     }
 }));
