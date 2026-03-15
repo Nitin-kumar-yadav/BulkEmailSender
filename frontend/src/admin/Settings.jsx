@@ -39,26 +39,6 @@ const Settings = () => {
 
             <div className="flex flex-col gap-4 w-full max-w-2xl">
 
-                {/* Appearance Section */}
-                <SettingsSection
-                    icon={<IoColorPaletteOutline size={18} />}
-                    title="Appearance"
-                    description="Customize how the app looks"
-                >
-                    <div className="flex items-center justify-between py-1">
-                        <div>
-                            <p className="font-comfortaa text-sm font-medium flex items-center gap-2">
-                                <IoMoonOutline size={15} className="text-gray-500" />
-                                Dark Mode
-                            </p>
-                            <p className="text-xs text-gray-400 font-comfortaa mt-0.5">Switch between light and dark theme</p>
-                        </div>
-                        <div onClick={toggleTheme} className="cursor-pointer">
-                            <Checkbox />
-                        </div>
-                    </div>
-                </SettingsSection>
-
                 {/* Security Section */}
                 <SettingsSection
                     icon={<IoShieldCheckmarkOutline size={18} />}
