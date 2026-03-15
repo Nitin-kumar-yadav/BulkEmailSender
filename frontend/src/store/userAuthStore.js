@@ -3,72 +3,73 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { mainUrl } from "../main";
 
-// Configure axios defaults so you don't have to repeat withCredentials
 axios.defaults.withCredentials = true;
 
 export const useUserAuthStore = create((set, get) => ({
-    authUser: JSON.parse(localStorage.getItem('authUser')) || null,
-    isCheckingAuth: false,
+    // ─── CRITICAL FIX ────────────────────────────────────────────────────
+    // Never seed authUser from localStorage.
+    // localStorage can be stale after logout + back button.
+    // The ONLY source of truth is the server (checkAuth).
+    // ─────────────────────────────────────────────────────────────────────
+    authUser: null,
+    isCheckingAuth: true,   // start TRUE so app waits for server before rendering
     isSignup: false,
     isLogin: false,
     isOtpVerify: false,
-    isUserId: JSON.parse(localStorage.getItem('userId')) || null,
+    isUserId: localStorage.getItem("userId") || null,
     isResendOtp: false,
 
-
+    /* ── checkAuth ──────────────────────────────────────────────────────── */
+    // Called ONCE on app mount. Until it resolves, isCheckingAuth = true
+    // so ProtectedRoute renders nothing (no flash of protected content).
     checkAuth: async () => {
         set({ isCheckingAuth: true });
         try {
             const res = await axios.get(`${mainUrl}/v1/api/checkAuth`, {
                 withCredentials: true,
+                headers: {
+                    "Cache-Control": "no-store, no-cache, must-revalidate",
+                    Pragma: "no-cache",
+                },
             });
-
-            const user = res.data;
-            set({ authUser: user });
-
-            if (user) {
-                localStorage.setItem('authUser', JSON.stringify(user));
-            } else {
-                localStorage.removeItem('authUser');
-            }
-        } catch (error) {
+            set({ authUser: res.data });
+        } catch {
+            // Cookie missing or expired → not logged in
             set({ authUser: null });
-            localStorage.removeItem('authUser');
-            console.error("Auth check failed:", error.response?.data?.message);
         } finally {
             set({ isCheckingAuth: false });
         }
     },
 
+    /* ── signup ─────────────────────────────────────────────────────────── */
     signup: async (userData) => {
         set({ isSignup: true });
         try {
             const res = await axios.post(`${mainUrl}/v1/api/signup`, userData);
             toast.success(res?.data?.message);
-            set({ isSignup: false });
             set({ isUserId: res.data.userId });
-            console.log(res)
+            localStorage.setItem("userId", res.data.userId);
             return res.data;
         } catch (error) {
             toast.error(error?.response?.data?.message || "Signup failed");
+        } finally {
             set({ isSignup: false });
         }
     },
 
+    /* ── login ──────────────────────────────────────────────────────────── */
     login: async (userData) => {
         set({ isLogin: true });
         try {
             const res = await axios.post(`${mainUrl}/v1/api/signin`, userData, {
                 withCredentials: true,
             });
-
             const user = res?.data;
-
+            // Only store in Zustand — NOT localStorage
+            // The httpOnly cookie is the real session token
             set({ authUser: user });
-            localStorage.setItem('authUser', JSON.stringify(user));
             toast.success(`Welcome back, ${user.Name}`);
             return { success: true, data: user };
-
         } catch (error) {
             const message = error?.response?.data?.message || "Login failed";
             toast.error(message);
@@ -78,16 +79,18 @@ export const useUserAuthStore = create((set, get) => ({
         }
     },
 
+    /* ── otpVerify ──────────────────────────────────────────────────────── */
     otpVerify: async (userData) => {
         set({ isOtpVerify: true });
         const userId = get().isUserId;
         try {
-            const res = await axios.post(`${mainUrl}/v1/api/otp-verification?_id=${userId}`, userData, {
-                withCredentials: true,
-            });
+            const res = await axios.post(
+                `${mainUrl}/v1/api/otp-verification?_id=${userId}`,
+                userData,
+                { withCredentials: true }
+            );
             set({ authUser: res.data });
-            localStorage.setItem('authUser', JSON.stringify(res.data));
-            toast.success(`Account verified successfully!`);
+            toast.success("Account verified successfully!");
         } catch (error) {
             toast.error(error?.response?.data?.message || "OTP Verification failed");
         } finally {
@@ -95,13 +98,16 @@ export const useUserAuthStore = create((set, get) => ({
         }
     },
 
+    /* ── resendOtp ──────────────────────────────────────────────────────── */
     resendOtp: async (userData) => {
         set({ isResendOtp: true });
         const userId = get().isUserId;
         try {
-            const res = await axios.post(`${mainUrl}/v1/api/resend-otp?_id=${userId}`, userData, {
-                withCredentials: true,
-            });
+            const res = await axios.post(
+                `${mainUrl}/v1/api/resend-otp?_id=${userId}`,
+                userData,
+                { withCredentials: true }
+            );
             toast.success(res?.data?.message);
         } catch (error) {
             toast.error(error?.response?.data?.message || "Resend OTP failed");
@@ -110,18 +116,37 @@ export const useUserAuthStore = create((set, get) => ({
         }
     },
 
+    /* ── logout ─────────────────────────────────────────────────────────── */
     logout: async () => {
         try {
-            const res = await axios.get(`${mainUrl}/v1/api/logout`);
-            set({ authUser: null });
-            localStorage.removeItem('authUser');
-            toast.success(res?.data?.message);
+            const res = await axios.get(`${mainUrl}/v1/api/logout`, {
+                withCredentials: true,
+            });
+            localStorage.removeItem("authUser");
+            localStorage.removeItem("userId");
+            toast.success(res?.data?.message || "Logged out successfully");
         } catch (error) {
             toast.error(error?.response?.data?.message || "Logout failed");
-            set({ authUser: null });
-            localStorage.removeItem('authUser');
         } finally {
-            set({ isLogout: false });
+            // 1. Clear Zustand
+            set({ authUser: null, isUserId: null });
+
+            // 2. Clear all localStorage + sessionStorage
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // 3. Expire every client-readable cookie
+            document.cookie.split(";").forEach((c) => {
+                const key = c.split("=")[0].trim();
+                ["/", "/api", "/v1", "/v1/api"].forEach((path) => {
+                    document.cookie =
+                        `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
+                });
+            });
+
+            // 4. Hard navigation — destroys JS heap + React tree.
+            //    Back button cannot restore the cached authenticated page.
+            window.location.replace("/login");
         }
     },
 }));

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { applySavedTheme } from "./theme/theme";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./screen/Home";
 import Login from "./screen/Login";
 import Signup from "./screen/Signup";
@@ -11,8 +11,47 @@ import { useUserAuthStore } from "./store/userAuthStore";
 import Compose from "./admin/Compose";
 import Settings from "./admin/Settings";
 
+/* ── Inject no-cache meta tags so the browser NEVER serves
+      a protected page from the back-button cache ──────────── */
+const useNoCacheHeaders = () => {
+    useEffect(() => {
+        const metas = [
+            { he: "Cache-Control", content: "no-store, no-cache, must-revalidate" },
+            { he: "Pragma", content: "no-cache" },
+            { he: "Expires", content: "0" },
+        ];
+        const nodes = metas.map(({ he, content }) => {
+            const el = document.createElement("meta");
+            el.setAttribute("http-equiv", he);
+            el.setAttribute("content", content);
+            document.head.appendChild(el);
+            return el;
+        });
+        return () => nodes.forEach((el) => document.head.removeChild(el));
+    }, []);
+};
+
+/* ── Guest-only: logged-in users bounce to /dashboard ── */
+const GuestRoute = ({ children }) => {
+    const { authUser, isCheckingAuth } = useUserAuthStore();
+    if (isCheckingAuth) return null;
+    return authUser ? <Navigate to="/dashboard" replace /> : children;
+};
+
+/* ── Protected: guests bounce to /login with "from" saved ── */
+const ProtectedRoute = ({ children }) => {
+    const { authUser, isCheckingAuth } = useUserAuthStore();
+    const location = useLocation();
+    if (isCheckingAuth) return null;
+    return authUser
+        ? children
+        : <Navigate to="/login" state={{ from: location }} replace />;
+};
+
+/* ══════════════════════════════════════════════════════════ */
 const App = () => {
     const { checkAuth, authUser, isCheckingAuth } = useUserAuthStore();
+    useNoCacheHeaders();
 
     useEffect(() => {
         applySavedTheme();
@@ -20,38 +59,46 @@ const App = () => {
     }, [checkAuth]);
 
     if (isCheckingAuth) {
-        return <div>Loading...</div>;
+        return (
+            <div style={{
+                display: "flex", alignItems: "center", justifyContent: "center",
+                minHeight: "100vh", background: "#04060f",
+            }}>
+                <div style={{
+                    width: 28, height: 28, borderRadius: "50%",
+                    border: "2px solid rgba(255,255,255,0.1)",
+                    borderTopColor: "#6366f1",
+                    animation: "spin 0.8s linear infinite",
+                }} />
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+        );
     }
 
     return (
         <>
             <Navbar />
-
             <Routes>
-                <Route path="/" element={<Home />} />
 
+                {/* ── Public (guests only — logged-in users redirect to dashboard) ── */}
+                <Route path="/" element={<GuestRoute><Home /></GuestRoute>} />
+                <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+                <Route path="/signup" element={<GuestRoute><Signup /></GuestRoute>} />
 
-                <Route
-                    path="/login"
-                    element={!authUser ? <Login /> : <Navigate to="/dashboard" />}
-                />
-                <Route
-                    path="/signup"
-                    element={!authUser ? <Signup /> : <Navigate to="/dashboard" />}
-                />
+                {/* OTP verification — open to everyone */}
                 <Route path="/verify-otp" element={<Verification />} />
+
+                {/* ── Protected (guests redirect to /login) ── */}
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/compose" element={<ProtectedRoute><Compose /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+                {/* ── Fallback ── */}
                 <Route
-                    path="/dashboard"
-                    element={authUser ? <Dashboard /> : <Navigate to="/dashboard" />}
+                    path="*"
+                    element={authUser ? <Navigate to="/dashboard" replace /> : <Navigate to="/" replace />}
                 />
-                <Route
-                    path="/compose"
-                    element={authUser ? <Compose /> : <Navigate to="/compose" />}
-                />
-                <Route
-                    path="/settings"
-                    element={authUser ? <Settings /> : <Navigate to="/settings" />}
-                />
+
             </Routes>
         </>
     );
