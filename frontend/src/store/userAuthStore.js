@@ -27,10 +27,6 @@ export const useUserAuthStore = create((set, get) => ({
         try {
             const res = await axios.get(`${mainUrl}/v1/api/checkAuth`, {
                 withCredentials: true,
-                headers: {
-                    "Cache-Control": "no-store, no-cache, must-revalidate",
-                    Pragma: "no-cache",
-                },
             });
             set({ authUser: res.data });
         } catch {
