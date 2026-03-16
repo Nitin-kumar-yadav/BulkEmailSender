@@ -11,26 +11,6 @@ import { useUserAuthStore } from "./store/userAuthStore";
 import Compose from "./admin/Compose";
 import Settings from "./admin/Settings";
 
-/* ── Inject no-cache meta tags so the browser NEVER serves
-      a protected page from the back-button cache ──────────── */
-const useNoCacheHeaders = () => {
-    useEffect(() => {
-        const metas = [
-            { he: "Cache-Control", content: "no-store, no-cache, must-revalidate" },
-            { he: "Pragma", content: "no-cache" },
-            { he: "Expires", content: "0" },
-        ];
-        const nodes = metas.map(({ he, content }) => {
-            const el = document.createElement("meta");
-            el.setAttribute("http-equiv", he);
-            el.setAttribute("content", content);
-            document.head.appendChild(el);
-            return el;
-        });
-        return () => nodes.forEach((el) => document.head.removeChild(el));
-    }, []);
-};
-
 /* ── Guest-only: logged-in users bounce to /dashboard ── */
 const GuestRoute = ({ children }) => {
     const { authUser, isCheckingAuth } = useUserAuthStore();
@@ -51,7 +31,6 @@ const ProtectedRoute = ({ children }) => {
 /* ══════════════════════════════════════════════════════════ */
 const App = () => {
     const { checkAuth, authUser, isCheckingAuth } = useUserAuthStore();
-    useNoCacheHeaders();
 
     useEffect(() => {
         applySavedTheme();
