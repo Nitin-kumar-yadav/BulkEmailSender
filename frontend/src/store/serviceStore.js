@@ -103,5 +103,15 @@ export const serviceStore = create((set) => ({
                 loading: false
             });
         }
+    },
+    updateAppPassword: async (userData) => {
+        try {
+            const res = await axios.post(`${mainUrl}/v1/api/email-pass`, userData, {
+                withCredentials: true,
+            });
+            toast.success(res?.data?.message);
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Email Password failed");
+        }
     }
 }));
