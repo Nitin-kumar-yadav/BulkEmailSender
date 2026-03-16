@@ -17,13 +17,13 @@ export const serviceStore = create((set) => ({
                 `${mainUrl}/v1/api/email-report`,
                 { withCredentials: true }
             );
-            // console.log(res?.data?.data?.[0]?.recipients);
+            // console.log(res?.data?.data?.emailMessages[0].recipients)
             set({
-                reportList: res?.data?.data?.[0]?.recipients,
+                reportList: res?.data?.data?.emailMessages[0].recipients || [],
                 loading: false
             });
             set({
-                EmailData: res?.data?.data?.[0],
+                EmailData: res?.data?.data || {},
                 loading: false
             });
             toast.success(res?.data?.message);

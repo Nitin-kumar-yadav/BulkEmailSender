@@ -61,7 +61,7 @@ export const getEmailReportData = async (req, res) => {
         }
         return res.status(200).json({
             message: "Email Report Data",
-            data: emailInfoData.emailMessages
+            data: emailInfoData
         });
     }
     catch (error) {
