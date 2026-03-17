@@ -205,28 +205,31 @@ export const resendOtp = async (req, res) => {
 
 export const updateUserPassword = async (req, res) => {
     try {
-        const userId = req.user._id;
-        const { Password } = req.body;
+        const userId = req.user?._id;
         if (!userId) {
-            return res.status(400).json({ message: "Invalid User" })
+            return res.status(400).json({ message: "Invalid User" });
         }
-        else if (!Password) {
-            return res.status(400).json({ message: "Password is required" })
+
+        const { Password } = req.body;
+        if (!Password) {
+            return res.status(400).json({ message: "Password is required" });
+        }
+        if (Password.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters long" });
         }
         const checkUser = await UserModel.findById(userId);
         if (!checkUser || !checkUser.isVerified) {
-            return res.status(400).json({ message: 'User not Register' })
+            return res.status(400).json({ message: 'User not Register' });
         }
         const hashedPassword = await bcrypt.hash(Password, 10);
         checkUser.Password = hashedPassword;
         await checkUser.save();
-        return res.status(200).json({ message: 'Password updated successfully' })
 
-
+        return res.status(200).json({ message: 'Password updated successfully' });
     } catch (error) {
         return res.status(500).json({
             message: "Password update failed",
             error: error.message,
         });
     }
-}
+};

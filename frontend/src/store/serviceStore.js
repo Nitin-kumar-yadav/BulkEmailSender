@@ -26,7 +26,7 @@ export const serviceStore = create((set) => ({
                 EmailData: res?.data?.data || {},
                 loading: false
             });
-            if (res?.data?.data?.emailMessages?.[0]?.recipients > 0) {
+            if (res?.data?.data?.emailMessages?.[0]?.recipients?.length > 0) {
                 toast.success(res?.data?.message);
             }
         } catch (err) {
