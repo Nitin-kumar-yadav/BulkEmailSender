@@ -41,13 +41,17 @@ export const useUserAuthStore = create((set, get) => ({
     signup: async (userData) => {
         set({ isSignup: true });
         try {
-            const res = await axios.post(`${mainUrl}/v1/api/signup`, userData);
-            toast.success(res?.data?.message);
+            const signupPromise = axios.post(`${mainUrl}/v1/api/signup`, userData);
+            const res = await toast.promise(signupPromise, {
+                loading: "Signing up...",
+                success: (resData) => resData?.data?.message || "Signup successful",
+                error: (err) => err?.response?.data?.message || "Signup failed",
+            });
             set({ isUserId: res.data.userId });
             localStorage.setItem("userId", res.data.userId);
             return res.data;
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Signup failed");
+            console.error(error);
         } finally {
             set({ isSignup: false });
         }
@@ -57,18 +61,21 @@ export const useUserAuthStore = create((set, get) => ({
     login: async (userData) => {
         set({ isLogin: true });
         try {
-            const res = await axios.post(`${mainUrl}/v1/api/signin`, userData, {
+            const loginPromise = axios.post(`${mainUrl}/v1/api/signin`, userData, {
                 withCredentials: true,
+            });
+            const res = await toast.promise(loginPromise, {
+                loading: "Logging in...",
+                success: (resData) => resData?.data?.message || "Login successful",
+                error: (err) => err?.response?.data?.message || "Login failed",
             });
             const user = res?.data;
             // Only store in Zustand — NOT localStorage
             // The httpOnly cookie is the real session token
             set({ authUser: user });
-            toast.success(`Welcome back, ${user.Name}`);
             return { success: true, data: user };
         } catch (error) {
             const message = error?.response?.data?.message || "Login failed";
-            toast.error(message);
             return { success: false, error: message };
         } finally {
             set({ isLogin: false });
@@ -80,15 +87,19 @@ export const useUserAuthStore = create((set, get) => ({
         set({ isOtpVerify: true });
         const userId = get().isUserId;
         try {
-            const res = await axios.post(
+            const otpPromise = axios.post(
                 `${mainUrl}/v1/api/otp-verification?_id=${userId}`,
                 userData,
                 { withCredentials: true }
             );
+            const res = await toast.promise(otpPromise, {
+                loading: "Verifying OTP...",
+                success: (resData) => resData?.data?.message || "OTP Verification successful",
+                error: (err) => err?.response?.data?.message || "OTP Verification failed",
+            });
             set({ authUser: res.data });
-            toast.success("Account verified successfully!");
         } catch (error) {
-            toast.error(error?.response?.data?.message || "OTP Verification failed");
+            console.error(error);
         } finally {
             set({ isOtpVerify: false });
         }
@@ -99,14 +110,18 @@ export const useUserAuthStore = create((set, get) => ({
         set({ isResendOtp: true });
         const userId = get().isUserId;
         try {
-            const res = await axios.post(
+            const resendPromise = axios.post(
                 `${mainUrl}/v1/api/resend-otp?_id=${userId}`,
                 userData,
                 { withCredentials: true }
             );
-            toast.success(res?.data?.message);
+            await toast.promise(resendPromise, {
+                loading: "Resending OTP...",
+                success: (resData) => resData?.data?.message || "OTP Resent",
+                error: (err) => err?.response?.data?.message || "Resend OTP failed",
+            });
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Resend OTP failed");
+            console.error(error);
         } finally {
             set({ isResendOtp: false });
         }
@@ -115,14 +130,18 @@ export const useUserAuthStore = create((set, get) => ({
     /* ── logout ─────────────────────────────────────────────────────────── */
     logout: async () => {
         try {
-            const res = await axios.get(`${mainUrl}/v1/api/logout`, {
+            const logoutPromise = axios.get(`${mainUrl}/v1/api/logout`, {
                 withCredentials: true,
+            });
+            await toast.promise(logoutPromise, {
+                loading: "Logging out...",
+                success: (resData) => resData?.data?.message || "Logged out successfully",
+                error: (err) => err?.response?.data?.message || "Logout failed",
             });
             localStorage.removeItem("authUser");
             localStorage.removeItem("userId");
-            toast.success(res?.data?.message || "Logged out successfully");
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Logout failed");
+            console.error(error);
         } finally {
             // 1. Clear Zustand
             set({ authUser: null, isUserId: null });
@@ -147,12 +166,16 @@ export const useUserAuthStore = create((set, get) => ({
     },
     updateUserPassword: async (userData) => {
         try {
-            const res = await axios.put(`${mainUrl}/v1/api/updatePassword`, userData, {
+            const updatePassPromise = axios.put(`${mainUrl}/v1/api/updatePassword`, userData, {
                 withCredentials: true,
             });
-            toast.success(res?.data?.message);
+            await toast.promise(updatePassPromise, {
+                loading: "Updating password...",
+                success: (resData) => resData?.data?.message || "Password updated successfully",
+                error: (err) => err?.response?.data?.message || "Password update failed",
+            });
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Password update failed");
+            console.error(error);
         }
     }
 }));
