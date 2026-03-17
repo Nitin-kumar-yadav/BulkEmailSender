@@ -89,3 +89,22 @@ export const deleteAllEmailData = async (req, res) => {
         return res.status(500).json({ message: error.message })
     }
 }
+
+export const updateEmailPass = async (req, res) => {
+    const userId = req.user._id;
+    const { emailAppPassword } = req.body;
+    try {
+        if (!emailAppPassword) {
+            return res.status(400).json({ message: "Email app password is required" })
+        }
+        const emailInfo = await EmailInfo.findOne({ userId })
+        if (!emailInfo) {
+            return res.status(400).json({ message: "Email info not found" })
+        }
+        emailInfo.emailAppPassword = emailAppPassword
+        await emailInfo.save()
+        return res.status(200).json({ message: "Email app password updated successfully", data: emailInfo })
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}

@@ -19,7 +19,7 @@ export const serviceStore = create((set) => ({
             );
             // console.log(res?.data?.data?.emailMessages[0].recipients)
             set({
-                reportList: res?.data?.data?.emailMessages[0].recipients || [],
+                reportList: res?.data?.data?.emailMessages?.[0]?.recipients || [],
                 loading: false
             });
             set({
@@ -112,6 +112,16 @@ export const serviceStore = create((set) => ({
             toast.success(res?.data?.message);
         } catch (error) {
             toast.error(error?.response?.data?.message || "Email Password failed");
+        }
+    },
+    updateEmailPass: async (userData) => {
+        try {
+            const res = await axios.put(`${mainUrl}/v1/api/update-email-pass`, userData, {
+                withCredentials: true,
+            });
+            toast.success(res?.data?.message);
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Email Password update failed");
         }
     }
 }));

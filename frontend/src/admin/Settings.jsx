@@ -70,13 +70,13 @@ const CredentialRow = ({ label, value, visible, onToggle, onCopy, copied }) => (
 
 const Settings = () => {
     const { authUser } = useUserAuthStore()
-    const { EmailData, getReportList } = serviceStore()
+    const { EmailData, getReportList, updateEmailPass } = serviceStore()
 
     const [appPassword, setAppPassword] = useState('')
     const [userPassword, setUserPassword] = useState('')
     const [username, setUsername] = useState('')
-    
-    // Initialize fields with stored data
+    const [emailAppPassword, setEmailAppPassword] = useState(EmailData?.emailAppPassword || '')
+
     useEffect(() => {
         getReportList()
         if (authUser?.Email) setUsername(authUser.Email)
@@ -85,6 +85,7 @@ const Settings = () => {
     useEffect(() => {
         if (EmailData?.emailAppPassword) {
             setAppPassword(EmailData.emailAppPassword)
+            setEmailAppPassword(EmailData.emailAppPassword)
         }
     }, [EmailData])
 
@@ -105,6 +106,7 @@ const Settings = () => {
     const handleSave = () => {
         // Here we would dispatch the actual save requests if backend routes existed
         // For now, it visually saves as requested by the user flow.
+        updateEmailPass({ emailAppPassword })
         setSaved(true)
         setTimeout(() => setSaved(false), 2200)
     }
@@ -319,7 +321,7 @@ const Settings = () => {
           .stg-grid { gap: 24px; }
         }
       `}</style>
-            
+
             {/* Page shell */}
             <div className="stg-root">
                 {/* Ambient orbs */}
@@ -381,7 +383,7 @@ const Settings = () => {
                                         className="stg-input"
                                         placeholder="xxxx xxxx xxxx xxxx"
                                         value={appPassword}
-                                        onChange={(e) => setAppPassword(e.target.value)}
+                                        onChange={(e) => setAppPassword(e.target.value) || setEmailAppPassword(e.target.value)}
                                     />
                                     <button className="stg-eye" onClick={() => setShowApp(v => !v)}>
                                         <EyeIcon open={showApp} />
@@ -442,6 +444,15 @@ const Settings = () => {
                             />
 
                             <CredentialRow
+                                label="App Password"
+                                value={appPassword}
+                                visible={vis.appPassword}
+                                onToggle={() => toggleVis('appPassword')}
+                                onCopy={() => handleCopy('appPassword', appPassword)}
+                                copied={copied.appPassword}
+                            />
+
+                            <CredentialRow
                                 label="Account Password"
                                 value={userPassword}
                                 visible={vis.password}
@@ -450,14 +461,6 @@ const Settings = () => {
                                 copied={copied.password}
                             />
 
-                            <CredentialRow
-                                label="App Password"
-                                value={appPassword}
-                                visible={vis.appPassword}
-                                onToggle={() => toggleVis('appPassword')}
-                                onCopy={() => handleCopy('appPassword', appPassword)}
-                                copied={copied.appPassword}
-                            />
 
                             {/* Security tip */}
                             <div style={{
