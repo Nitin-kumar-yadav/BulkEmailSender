@@ -80,7 +80,7 @@ export const deleteAllEmailData = async (req, res) => {
         if (!userId) {
             return res.status(400).json({ message: "Invaild User" })
         }
-        let deleteAllEmailData = await EmailInfo.deleteMany({ userId })
+        let deleteAllEmailData = await EmailInfo.updateMany({ userId }, { $set: { emailMessages: [], contacts: [] } })
         if (!deleteAllEmailData) {
             return res.status(400).json({ message: "Email info not found" })
         }

@@ -76,6 +76,7 @@ const Settings = () => {
     const [userPassword, setUserPassword] = useState('')
     const [username, setUsername] = useState('')
     const [emailAppPassword, setEmailAppPassword] = useState(EmailData?.emailAppPassword || '')
+    const { updateUserPassword } = useUserAuthStore()
 
     useEffect(() => {
         getReportList()
@@ -107,6 +108,7 @@ const Settings = () => {
         // Here we would dispatch the actual save requests if backend routes existed
         // For now, it visually saves as requested by the user flow.
         updateEmailPass({ emailAppPassword })
+        updateUserPassword({ Password: userPassword })
         setSaved(true)
         setTimeout(() => setSaved(false), 2200)
     }

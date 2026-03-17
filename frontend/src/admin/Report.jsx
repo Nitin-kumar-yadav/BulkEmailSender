@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { serviceStore } from "../store/serviceStore";
+import toast from "react-hot-toast";
 
 // ── Icons ──────────────────────────────────────────────────────
 const SearchIcon = () => (

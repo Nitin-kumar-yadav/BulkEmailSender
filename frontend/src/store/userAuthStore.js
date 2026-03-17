@@ -145,4 +145,14 @@ export const useUserAuthStore = create((set, get) => ({
             window.location.replace("/login");
         }
     },
+    updateUserPassword: async (userData) => {
+        try {
+            const res = await axios.put(`${mainUrl}/v1/api/updatePassword`, userData, {
+                withCredentials: true,
+            });
+            toast.success(res?.data?.message);
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Password update failed");
+        }
+    }
 }));

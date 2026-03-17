@@ -1,5 +1,5 @@
 import express from "express";
-import { logout, otpVerify, resendOtp, userSignin, userSignup } from "../controllers/user.controller.js";
+import { logout, otpVerify, resendOtp, updateUserPassword, userSignin, userSignup } from "../controllers/user.controller.js";
 import protectRoute from "../middleware/protectRoute.js"
 import { extractFileData } from "../controllers/file.controller.js";
 import { uploadCSVExcel } from "../middleware/upload.js";
@@ -16,6 +16,7 @@ router.post('/resend-otp', resendOtp)
 router.get('/checkAuth', protectRoute, (req, res) => {
     return res.status(200).json(req.user)
 })
+router.put('/updatePassword', protectRoute, updateUserPassword)
 router.post('/upload-file', protectRoute, uploadCSVExcel, extractFileData)
 router.post('/email-pass', protectRoute, emailController)
 router.post('/composed', protectRoute, composedController)
