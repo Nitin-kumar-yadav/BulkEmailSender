@@ -121,10 +121,11 @@ export const composedController = async (req, res) => {
                         } else {
                             targetEmail.recipients[index].status = "failed";
                             targetEmail.recipients[index].error =
-                                result.reason?.message || "Email sending failed";
+                                result.status === "rejected"
+                                    ? result.reason?.message || "Email sending failed"
+                                    : result.value?.error || "Email sending failed";
                         }
                     });
-
                     freshEmailInfo.schedule.status = "completed";
                     await freshEmailInfo.save();
 

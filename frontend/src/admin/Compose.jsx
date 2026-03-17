@@ -66,7 +66,8 @@ const Compose = () => {
       const payload = { ...formData, scheduleDate, scheduleTime };
       await uploadEmailMessage(payload);
       setSent(true);
-      if (scheduleDate || scheduleTime) {
+      const isScheduled = scheduleDate && scheduleTime;
+      if (isScheduled) {
         showToast(`Campaign scheduled!`);
       } else {
         showToast("Campaign dispatched!");
@@ -434,9 +435,9 @@ const Compose = () => {
             {["Recipients", "Message", "Send"].map((s, i) => (
               <React.Fragment key={s}>
                 <span className={`cmp-step-pill ${(i === 0 && fileName) ||
-                    (i === 1 && formData.subject && formData.message) ||
-                    (i === 2 && sent)
-                    ? "active" : ""}`}
+                  (i === 1 && formData.subject && formData.message) ||
+                  (i === 2 && sent)
+                  ? "active" : ""}`}
                 >
                   {s}
                 </span>
@@ -522,7 +523,7 @@ const Compose = () => {
               <div className="cmp-body-row">
                 <label className="cmp-label">Subject</label>
                 <button className="cmp-ai-btn" onClick={(e) => { e.preventDefault(); handleAICorrect("subject"); }} disabled={isAiLoading.subject}>
-                  {isAiLoading.subject ? <span className="cmp-ai-spinner" /> : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>}
+                  {isAiLoading.subject ? <span className="cmp-ai-spinner" /> : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /></svg>}
                   {isAiLoading.subject ? "Fixing..." : "AI Correct"}
                 </button>
               </div>
@@ -542,7 +543,7 @@ const Compose = () => {
                 <label className="cmp-label">Body</label>
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                   <button className="cmp-ai-btn" onClick={(e) => { e.preventDefault(); handleAICorrect("message"); }} disabled={isAiLoading.message}>
-                    {isAiLoading.message ? <span className="cmp-ai-spinner" /> : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>}
+                    {isAiLoading.message ? <span className="cmp-ai-spinner" /> : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /></svg>}
                     {isAiLoading.message ? "Enhancing..." : "AI Enhance"}
                   </button>
                   <span className="cmp-char-count" style={{ color: charLen > 1800 ? "#f87171" : "rgba(255,255,255,0.18)" }}>
