@@ -28,8 +28,7 @@ export const serviceStore = create((set) => ({
             });
             if (res?.data?.data?.emailMessages?.[0]?.recipients?.length > 0) {
                 toast.success(res?.data?.message);
-            }
-        } catch (err) {
+            }        } catch (err) {
             console.error("Failed to fetch report list:", err?.response?.data?.message);
 
             set({

@@ -4,12 +4,32 @@ import { serviceStore } from "../store/serviceStore";
 const Compose = () => {
   const { uploadFile, uploadEmailMessage } = serviceStore();
   const [formData, setFormData] = useState({ subject: "", message: "" });
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [scheduleTime, setScheduleTime] = useState("");
   const [fileName, setFileName] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [isAiLoading, setIsAiLoading] = useState({ subject: false, message: false });
   const [sent, setSent] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", success: true });
   const fileInputRef = useRef(null);
+
+  const handleAICorrect = async (field) => {
+    if (!formData[field].trim()) {
+      showToast(`Please enter some ${field} to correct.`, false);
+      return;
+    }
+    setIsAiLoading((prev) => ({ ...prev, [field]: true }));
+    // Mock AI correction timeout
+    setTimeout(() => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: prev[field] + (field === 'subject' ? " ✨" : "\n\n(Enhanced by AI ✨)")
+      }));
+      setIsAiLoading((prev) => ({ ...prev, [field]: false }));
+      showToast(`${field.charAt(0).toUpperCase() + field.slice(1)} enhanced by AI!`);
+    }, 1500);
+  };
 
   const showToast = (message, success = true) => {
     setToast({ show: true, message, success });
@@ -43,9 +63,14 @@ const Compose = () => {
     }
     setIsSending(true);
     try {
-      await uploadEmailMessage(formData);
+      const payload = { ...formData, scheduleDate, scheduleTime };
+      await uploadEmailMessage(payload);
       setSent(true);
-      showToast("Campaign dispatched!");
+      if (scheduleDate || scheduleTime) {
+        showToast(`Campaign scheduled!`);
+      } else {
+        showToast("Campaign dispatched!");
+      }
     } catch {
       showToast("Failed to send. Try again.", false);
     } finally {
@@ -326,6 +351,53 @@ const Compose = () => {
         .cmp-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .cmp-toast-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
+        /* ── AI & Schedule Additions ── */
+        .cmp-ai-btn {
+          background: linear-gradient(90deg, #ff00cc, #3333ff, #00d4ff, #ff00cc);
+          background-size: 300% auto;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          padding: 6px 12px;
+          font-size: 11px;
+          font-weight: 600;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          animation: cmpAiGlow 3s linear infinite;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cmp-ai-btn:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 15px rgba(255, 0, 204, 0.4);
+        }
+        .cmp-ai-btn:disabled {
+          opacity: 0.6; pointer-events: none; animation: none;
+        }
+        @keyframes cmpAiGlow {
+          0% { background-position: 0% center; }
+          100% { background-position: 300% center; }
+        }
+        .cmp-schedule-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          margin-top: 16px;
+          margin-bottom: 24px;
+          padding: 16px;
+          background: rgba(255,255,255,0.02);
+          border-radius: 12px;
+          border: 1px solid rgba(255,255,255,0.05);
+        }
+        .cmp-ai-spinner {
+          width: 12px; height: 12px;
+          border: 2px solid rgba(255,255,255,.3);
+          border-top-color: #fff;
+          border-radius: 50%;
+          animation: cmpSpin .7s linear infinite;
+        }
+
         /* ── Responsive ── */
         @media (max-width: 767px) {
           .cmp-root {
@@ -447,7 +519,13 @@ const Compose = () => {
 
             {/* Subject */}
             <div className="cmp-field">
-              <label className="cmp-label">Subject</label>
+              <div className="cmp-body-row">
+                <label className="cmp-label">Subject</label>
+                <button className="cmp-ai-btn" onClick={(e) => { e.preventDefault(); handleAICorrect("subject"); }} disabled={isAiLoading.subject}>
+                  {isAiLoading.subject ? <span className="cmp-ai-spinner" /> : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>}
+                  {isAiLoading.subject ? "Fixing..." : "AI Correct"}
+                </button>
+              </div>
               <input
                 type="text"
                 className="cmp-input"
@@ -462,9 +540,15 @@ const Compose = () => {
             <div className="cmp-field cmp-field-grow">
               <div className="cmp-body-row">
                 <label className="cmp-label">Body</label>
-                <span className="cmp-char-count" style={{ color: charLen > 1800 ? "#f87171" : "rgba(255,255,255,0.18)" }}>
-                  {charLen} / 2000
-                </span>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <button className="cmp-ai-btn" onClick={(e) => { e.preventDefault(); handleAICorrect("message"); }} disabled={isAiLoading.message}>
+                    {isAiLoading.message ? <span className="cmp-ai-spinner" /> : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>}
+                    {isAiLoading.message ? "Enhancing..." : "AI Enhance"}
+                  </button>
+                  <span className="cmp-char-count" style={{ color: charLen > 1800 ? "#f87171" : "rgba(255,255,255,0.18)" }}>
+                    {charLen} / 2000
+                  </span>
+                </div>
               </div>
               <textarea
                 className="cmp-input"
@@ -475,6 +559,28 @@ const Compose = () => {
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               />
             </div>
+          </div>
+        </div>
+
+        {/* ── Schedule ── */}
+        <div className="cmp-schedule-grid anim-3">
+          <div className="cmp-field">
+            <label className="cmp-label">Schedule Date</label>
+            <input
+              type="date"
+              className="cmp-input"
+              value={scheduleDate}
+              onChange={(e) => setScheduleDate(e.target.value)}
+            />
+          </div>
+          <div className="cmp-field">
+            <label className="cmp-label">Schedule Time</label>
+            <input
+              type="time"
+              className="cmp-input"
+              value={scheduleTime}
+              onChange={(e) => setScheduleTime(e.target.value)}
+            />
           </div>
         </div>
 

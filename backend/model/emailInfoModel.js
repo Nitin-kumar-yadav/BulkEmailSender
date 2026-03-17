@@ -59,6 +59,19 @@ const emailInfoSchema = new mongoose.Schema(
         emailMessages: {
             type: [emailMessageSchema],
             default: []
+        },
+        schedule: {
+            type: {
+                date: String,
+                time: String,
+                status: {
+                    type: String,
+                    enum: ["scheduled", "completed"],
+                    default: "scheduled"
+                },
+                emailMessageId: mongoose.Schema.Types.ObjectId
+            },
+            default: null,
         }
     },
     { timestamps: true }
