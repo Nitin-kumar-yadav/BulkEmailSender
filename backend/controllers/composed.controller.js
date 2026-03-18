@@ -115,7 +115,7 @@ export const composedController = async (req, res) => {
                     results.forEach((result, index) => {
                         if (
                             result.status === "fulfilled" &&
-                            result.value?.response === "OK"
+                            result.value?.accepted?.length > 0
                         ) {
                             targetEmail.recipients[index].status = "success";
                         } else {
@@ -160,7 +160,7 @@ export const composedController = async (req, res) => {
         results.forEach((result, index) => {
             if (
                 result.status === "fulfilled" &&
-                result.value?.response === "OK"
+                result.value?.accepted?.length > 0
             ) {
                 currentEmail.recipients[index].status = "success";
             } else {
