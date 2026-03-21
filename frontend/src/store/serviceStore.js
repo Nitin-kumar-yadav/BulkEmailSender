@@ -148,7 +148,7 @@ export const serviceStore = create((set) => ({
             });
             return res;
         } catch (err) {
-            console.error("Failed to upload email message:", err?.response?.data?.message);
+            console.error("Failed to call OpenAI controller:", err?.response?.data?.message);
             toast.error(err?.response?.data?.message);
 
             set({
