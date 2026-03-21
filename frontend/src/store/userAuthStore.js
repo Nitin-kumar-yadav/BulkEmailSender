@@ -6,7 +6,7 @@ import { mainUrl } from "../main";
 axios.defaults.withCredentials = true;
 
 export const useUserAuthStore = create((set, get) => ({
-    
+
     authUser: null,
     isCheckingAuth: true,
     isSignup: false,
@@ -23,7 +23,8 @@ export const useUserAuthStore = create((set, get) => ({
                 withCredentials: true,
             });
             set({ authUser: res.data });
-        } catch {   
+        } catch (error) {
+            console.error("Auth check failed:", error);
             set({ authUser: null });
         } finally {
             set({ isCheckingAuth: false });

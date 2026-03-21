@@ -58,7 +58,7 @@ export const composedController = async (req, res) => {
                 });
             }
 
-            const scheduledDateTime = new Date(`${scheduleDate}T${scheduleTime}`);
+            const scheduledDateTime = new Date(`${scheduleDate}T${scheduleTime}:00${userTimezoneOffset}`);
 
             if (isNaN(scheduledDateTime.getTime())) {
                 return res.status(400).json({
@@ -125,6 +125,16 @@ export const composedController = async (req, res) => {
 
                 } catch (err) {
                     console.error("Scheduled email error:", err);
+                    try {
+                        const failedEmailInfo = await EmailInfo.findOne({ userId });
+                        if (failedEmailInfo?.schedule) {
+                            failedEmailInfo.schedule.status = "failed";
+                            failedEmailInfo.schedule.error = err.message;
+                            await failedEmailInfo.save();
+                        }
+                    } catch (saveErr) {
+                        console.error("Failed to update schedule status:", saveErr);
+                    }
                 } finally {
                     task.stop();
                 }

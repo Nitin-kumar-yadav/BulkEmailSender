@@ -12,6 +12,10 @@ export const openAIController = async (req, res) => {
     }
 
     const { subject, message, field, text } = req.body;
+    const allowedFields = ["subject", "message", "body"];
+    if (field && !allowedFields.includes(field)) {
+        return res.status(400).json({ message: "Invalid field value" });
+    }
     if (!subject && !message && !text) {
         return res.status(400).json({ message: "Content is required" });
     }
@@ -42,7 +46,7 @@ Instructions:
         });
 
         const enhancedText = completion.choices[0]?.message?.content?.trim() || "";
-        
+
         return res.status(200).json({
             message: enhancedText
         });

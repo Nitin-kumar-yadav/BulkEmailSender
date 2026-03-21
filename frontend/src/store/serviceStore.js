@@ -19,8 +19,6 @@ export const serviceStore = create((set) => ({
                 { withCredentials: true }
             );
 
-            console.log(res?.data?.data?.emailMessages[0]?.createdAt);
-
             set({
                 reportList: res?.data?.data?.emailMessages?.[0]?.recipients || [],
                 EmailData: res?.data?.data || {},
@@ -81,16 +79,16 @@ export const serviceStore = create((set) => ({
             toast.success(res?.data?.message);
         } catch (err) {
             console.error("Failed to upload email message:", err?.response?.data?.message);
+        } catch (err) {
+            console.error("Failed to call OpenAI controller:", err?.response?.data?.message);
             toast.error(err?.response?.data?.message);
 
             set({
                 error: err?.response?.data?.message || "Something went wrong",
                 loading: false
             });
-        }
-    },
-    //TODO: upload file
-    uploadFile: async (data) => {
+            return null;
+        }    uploadFile: async (data) => {
         set({ loading: true, error: null });
 
         try {
