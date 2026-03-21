@@ -79,16 +79,16 @@ export const serviceStore = create((set) => ({
             toast.success(res?.data?.message);
         } catch (err) {
             console.error("Failed to upload email message:", err?.response?.data?.message);
-        } catch (err) {
-            console.error("Failed to call OpenAI controller:", err?.response?.data?.message);
             toast.error(err?.response?.data?.message);
 
             set({
                 error: err?.response?.data?.message || "Something went wrong",
                 loading: false
             });
-            return null;
-        }    uploadFile: async (data) => {
+        }
+    },
+
+    uploadFile: async (data) => {
         set({ loading: true, error: null });
 
         try {

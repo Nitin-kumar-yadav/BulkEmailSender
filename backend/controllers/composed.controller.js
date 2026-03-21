@@ -58,7 +58,7 @@ export const composedController = async (req, res) => {
                 });
             }
 
-            const scheduledDateTime = new Date(`${scheduleDate}T${scheduleTime}:00${userTimezoneOffset}`);
+            const scheduledDateTime = new Date(`${scheduleDate}T${scheduleTime}`);
 
             if (isNaN(scheduledDateTime.getTime())) {
                 return res.status(400).json({
