@@ -10,22 +10,7 @@ import {
   useInView,
 } from 'framer-motion'
 
-/* ─────────────────────────────────────────
-   PERFORMANCE FIXES vs previous version
-   ─────────────────────────────────────────
-   1. Orbs → pure CSS @keyframes (compositor
-      thread, zero JS overhead).
-   2. will-change: transform on every orb
-      → dedicated GPU layer, no repaint.
-   3. blur() on static wrapper, NOT on the
-      moving element → no per-frame blur.
-   4. backdrop-filter removed → solid bg.
-   5. Framer only animates opacity + transform
-      (compositor-only, no layout/paint).
-   6. Scroll bounce → CSS animation.
-   7. Feature card hover → CSS transition.
-───────────────────────────────────────── */
-
+/*TODO:  ── Home Styles ── */
 const globalStyles = `
   @keyframes orbFloat1 {
     0%,100% { transform: translate(0,0) scale(1); }
@@ -50,7 +35,7 @@ const globalStyles = `
     50%      { transform: scale(1.8); opacity: 0; }
   }
 
-  /* Orb base — blur lives here, NOT on the animated child */
+  /*TODO: Orb base — blur lives here, NOT on the animated child */
   .orb-wrap {
     position: absolute;
     border-radius: 50%;
@@ -71,7 +56,7 @@ const globalStyles = `
   .scroll-bounce { animation: scrollBounce 1.6s ease-in-out infinite; }
   .badge-ping    { animation: badgePing   1.8s ease-in-out infinite; }
 
-  /* CTA button */
+  /*TODO: CTA button */
   .cta-btn {
     display: inline-flex;
     align-items: center;
@@ -90,7 +75,7 @@ const globalStyles = `
   .cta-btn:hover  { box-shadow: 0 0 44px rgba(59,130,246,0.5); transform: scale(1.04); }
   .cta-btn:active { transform: scale(0.97); }
 
-  /* Feature card — CSS hover only */
+  /*TODO: Feature card — CSS hover only */
   .feat-card {
     border-radius: 1rem;
     border: 0.5px solid rgba(255,255,255,0.07);
@@ -106,7 +91,7 @@ const globalStyles = `
     box-shadow: 0 12px 32px rgba(0,0,0,0.25);
   }
 
-  /* Gradient text helper */
+  /*TODO: Gradient text helper */
   .grad-text {
     background-image: linear-gradient(90deg,#60a5fa,#2dd4bf,#34d399);
     -webkit-background-clip: text;
@@ -121,7 +106,7 @@ const globalStyles = `
   }
 `
 
-/* ── Animated counter ── */
+/*TODO:  ── Animated counter ── */
 const Counter = ({ from = 0, to, suffix = '', prefix = '' }) => {
   const count = useMotionValue(from)
   const rounded = useTransform(count, (v) =>
@@ -135,7 +120,7 @@ const Counter = ({ from = 0, to, suffix = '', prefix = '' }) => {
   return <motion.span ref={ref}>{rounded}</motion.span>
 }
 
-/* ── Framer variants (opacity + transform only) ── */
+/*TODO:  ── Framer variants (opacity + transform only) ── */
 const fadeUp = {
   hidden: { opacity: 0, y: 26 },
   visible: (d = 0) => ({
@@ -148,7 +133,7 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.11 } },
 }
 
-/* ── Static data ── */
+/*TODO: ── Static data ── */
 const chips = ['No credit card', 'SMTP ready', '15k emails/month', 'Open-source']
 const features = [
   { icon: '✉️', title: 'Bulk Sending', desc: 'Upload a CSV and fire off thousands of personalised emails in minutes.' },
@@ -170,10 +155,7 @@ export default function Home() {
 
       <div style={{ position: 'relative', background: '#04060f', color: '#fff', overflowX: 'hidden', minHeight: '100vh' }}>
 
-        {/* ── Background orbs ──
-             Blur lives on the WRAPPER (static).
-             Animation lives on the INNER div (GPU layer).
-             This prevents per-frame blur recalculation. */}
+        {/*TODO:  ── Background orbs ── */}
         <div className="orb-wrap" style={{ width: 560, height: 560, top: -200, left: -150 }}>
           <div className="orb-inner orb-inner-1" style={{ background: '#2563eb' }} />
         </div>
@@ -184,7 +166,6 @@ export default function Home() {
           <div className="orb-inner orb-inner-3" style={{ background: '#4f46e5' }} />
         </div>
 
-        {/* ── Static dot grid (zero animation cost) ── */}
         <div
           aria-hidden
           style={{
@@ -194,7 +175,7 @@ export default function Home() {
           }}
         />
 
-        {/* ══════════ HERO ══════════ */}
+        {/*TODO:  ══════════ HERO ══════════ */}
         <section
           style={{
             position: 'relative', zIndex: 10,
@@ -204,7 +185,6 @@ export default function Home() {
             textAlign: 'center',
           }}
         >
-          {/* Live badge */}
           <motion.div
             variants={fadeUp} custom={0.05} initial="hidden" animate="visible"
             style={{
@@ -231,7 +211,6 @@ export default function Home() {
             Now free — no credit card required
           </motion.div>
 
-          {/* Headline */}
           <motion.h1
             variants={stagger} initial="hidden" animate="visible"
             style={{
@@ -249,7 +228,6 @@ export default function Home() {
             ))}
           </motion.h1>
 
-          {/* Sub-headline */}
           <motion.p
             variants={fadeUp} custom={0.55} initial="hidden" animate="visible"
             style={{
@@ -261,7 +239,6 @@ export default function Home() {
             own SMTP — full control, no vendor lock-in.
           </motion.p>
 
-          {/* CTA */}
           <motion.div
             variants={fadeUp} custom={0.75} initial="hidden" animate="visible"
             style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 20 }}
@@ -277,7 +254,6 @@ export default function Home() {
             </a>
           </motion.div>
 
-          {/* Trust chips */}
           <motion.div
             variants={fadeUp} custom={0.95} initial="hidden" animate="visible"
             style={{ marginTop: 28, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8 }}
@@ -297,7 +273,6 @@ export default function Home() {
             ))}
           </motion.div>
 
-          {/* Scroll indicator — CSS animation */}
           <motion.div
             variants={fadeUp} custom={1.3} initial="hidden" animate="visible"
             style={{ position: 'absolute', bottom: 36, left: '50%', transform: 'translateX(-50%)' }}
@@ -316,7 +291,7 @@ export default function Home() {
           </motion.div>
         </section>
 
-        {/* ══════════ STATS BAND ══════════ */}
+        {/*TODO: ══════════ STATS BAND ══════════ */}
         <motion.section
           variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
           style={{
@@ -346,12 +321,11 @@ export default function Home() {
           </div>
         </motion.section>
 
-        {/* ══════════ FEATURES ══════════ */}
+        {/*TODO: ══════════ FEATURES ══════════ */}
         <section
           id="features"
           style={{ position: 'relative', zIndex: 10, maxWidth: 1100, margin: '0 auto', padding: '6rem 1.5rem' }}
         >
-          {/* Header */}
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             style={{ textAlign: 'center', marginBottom: 56 }}
@@ -371,7 +345,6 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Feature cards */}
           <motion.div
             variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
             style={{
@@ -388,8 +361,7 @@ export default function Home() {
               </motion.div>
             ))}
           </motion.div>
-
-          {/* Card component */}
+/* TODO: Card component */
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             style={{ display: 'flex', justifyContent: 'center' }}
@@ -398,7 +370,7 @@ export default function Home() {
           </motion.div>
         </section>
 
-        {/* ══════════ FOOTER ══════════ */}
+        {/*TODO: ══════════ FOOTER ══════════ */}
         <Footer />
       </div>
     </>

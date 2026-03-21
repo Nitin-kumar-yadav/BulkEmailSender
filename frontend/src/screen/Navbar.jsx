@@ -9,7 +9,7 @@ import { FiSettings } from "react-icons/fi";
 import { CiLogout } from "react-icons/ci";
 import { RiChatDeleteLine } from "react-icons/ri";
 
-/* ── Static data ─────────────────────────────── */
+/*TODO: ── Static data ─────────────────────────────── */
 const NAV_ITEMS = [
     { to: "/dashboard", icon: MdOutlineDashboard, label: "Dashboard" },
     { to: "/compose", icon: HiOutlineMailOpen, label: "Composed" },
@@ -21,43 +21,36 @@ const PUBLIC_LINKS = [
     { to: "/signup", label: "Signup" },
 ];
 
-/* ── Design tokens — matches Home/Login/Signup/Pricing ── */
+/*TODO: ── Design tokens — matches Home/Login/Signup/Pricing ── */
 const T = {
-    // backgrounds — same as Home page (#04060f base)
     pageBg: "#04060f",
     sidebarBg: "rgba(6,6,18,0.98)",
     pillBg: "rgba(6,6,18,0.93)",
     cardBg: "rgba(255,255,255,0.04)",
 
-    // borders
     border: "rgba(255,255,255,0.07)",
     borderHover: "rgba(255,255,255,0.12)",
 
-    // text
     textPrimary: "#fff",
     textMuted: "rgba(255,255,255,0.48)",
 
-    // accents — same gradient used in Home hero & Login card
-    accent: "#6366f1",   // indigo
-    accentTeal: "#14b8a6",   // teal
+    accent: "#6366f1",
+    accentTeal: "#14b8a6",
     accentGrad: "linear-gradient(135deg,#6366f1,#14b8a6)",
 
-    // active nav item — same as Login input focus
     activeGrad: "linear-gradient(135deg,rgba(99,102,241,0.18),rgba(20,184,166,0.1))",
     activeBorder: "rgba(99,102,241,0.22)",
     activePip: "linear-gradient(180deg,#6366f1,#14b8a6)",
 
-    // status
     green: "#34d399",
 
-    // danger
     danger: "rgba(248,113,113,0.75)",
     dangerHov: "#f87171",
     dangerBg: "rgba(239,68,68,0.08)",
     dangerBorder: "rgba(239,68,68,0.2)",
 };
 
-/* ── Framer variants ─────────────────────────── */
+/*TODO: ── Framer variants ─────────────────────────── */
 const sidebarV = {
     hidden: { x: "-100%", opacity: 0 },
     visible: { x: 0, opacity: 1, transition: { type: "spring", stiffness: 280, damping: 28 } },
@@ -83,7 +76,7 @@ const bottomV = {
     }),
 };
 
-/* ── Logo mark — same gradient as Home/Login ─── */
+/*TODO: ── Logo mark — same gradient as Home/Login ─── */
 const Logo = ({ size = 30, radius = 8, fs = 14 }) => (
     <div style={{
         width: size, height: size, borderRadius: radius, flexShrink: 0,
@@ -94,7 +87,7 @@ const Logo = ({ size = 30, radius = 8, fs = 14 }) => (
     }}>M</div>
 );
 
-/* ── Action button ───────────────────────────── */
+/*TODO: ── Action button ───────────────────────────── */
 const ActionBtn = ({ icon, label, onClick, danger = false }) => {
     const [hov, setHov] = useState(false);
     return (
@@ -122,7 +115,7 @@ const ActionBtn = ({ icon, label, onClick, danger = false }) => {
     );
 };
 
-/* ── Sidebar content ─────────────────────────── */
+/*TODO: ── Sidebar content ─────────────────────────── */
 const SidebarContent = ({ authUser, location, onClose, onLogout, onDeleteAll }) => (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", padding: "0 10px" }}>
 
@@ -174,13 +167,11 @@ const SidebarContent = ({ authUser, location, onClose, onLogout, onDeleteAll }) 
             })}
         </nav>
 
-        {/* Bottom section */}
         <div style={{
             borderTop: `0.5px solid ${T.border}`,
             padding: "12px 0 18px",
             display: "flex", flexDirection: "column", gap: 6,
         }}>
-            {/* User card — same card style as Home stats band */}
             <motion.div custom={0} variants={bottomV} initial="hidden" animate="visible">
                 <div style={{
                     display: "flex", alignItems: "center", gap: 9,
@@ -188,7 +179,6 @@ const SidebarContent = ({ authUser, location, onClose, onLogout, onDeleteAll }) 
                     background: T.cardBg,
                     border: `0.5px solid ${T.border}`,
                 }}>
-                    {/* Initials avatar — same gradient as logo */}
                     <div style={{
                         width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
                         background: T.accentGrad,
@@ -232,22 +222,20 @@ const SidebarContent = ({ authUser, location, onClose, onLogout, onDeleteAll }) 
     </div>
 );
 
-/* ── Sidebar shell style ─────────────────────── */
+/*TODO: ── Sidebar shell style ─────────────────────── */
 const SIDEBAR = {
     position: "fixed", top: 0, left: 0, bottom: 0, width: 230, zIndex: 40,
     background: "rgba(6,6,18,0.98)",
     borderRight: `0.5px solid ${T.border}`,
-    // Subtle indigo glow on the right edge — matches Home orb ambience
     boxShadow: "4px 0 40px rgba(0,0,0,0.6), 1px 0 0 rgba(99,102,241,0.08)",
     display: "flex", flexDirection: "column",
 };
 
-/* ── Global CSS ──────────────────────────────── */
+/*TODO: ── Global CSS ──────────────────────────────── */
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap');
   *, *::before, *::after { box-sizing: border-box; }
 
-  /* Houdini custom property for rotating border */
   @property --nba {
     syntax: '<angle>';
     initial-value: 0deg;
@@ -255,13 +243,11 @@ const CSS = `
   }
   @keyframes nbaRotate { to { --nba: 360deg; } }
 
-  /* Status dot pulse — same green as Home "all systems operational" */
   @keyframes sbStatusPulse {
     0%,100% { box-shadow: 0 0 0 0   rgba(52,211,153,0.4); }
     50%      { box-shadow: 0 0 0 5px rgba(52,211,153,0);   }
   }
 
-  /* Pill nav — rotating ambient border, same technique as Login/Signup cards */
   .nb-pill-wrapper {
     position: fixed; top: 14px; left: 0; right: 0;
     z-index: 50;
@@ -284,13 +270,10 @@ const CSS = `
   .nb-pill-inner {
     display: flex; align-items: center; gap: 4px;
     padding: 0 16px; height: 48px; border-radius: 9999px;
-    /* Matches Home page bg (#04060f) with slight transparency */
     background: rgba(4,6,15,0.95);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
   }
-
-  /* Pill links */
   .nb-link {
     padding: 6px 13px; border-radius: 9999px;
     font-family: 'Syne',sans-serif; font-size: 13px; font-weight: 500;
@@ -298,7 +281,6 @@ const CSS = `
     transition: color 0.2s, background 0.2s;
   }
   .nb-link:hover  { color: #fff; background: rgba(255,255,255,0.07); }
-  /* Active uses same indigo tint as Login active state */
   .nb-link.active { color: #a5b4fc; background: rgba(99,102,241,0.12); }
 
   /* Responsive breakpoints */
@@ -314,7 +296,7 @@ const CSS = `
   }
 `;
 
-/* ════════════════════════════════════════════════ */
+/*TODO:  ═════════════════════Navbar Component══════════════════════ */
 export default function Navbar() {
     const { authUser, isCheckingAuth, logout } = useUserAuthStore();
     const { deleteAllEmailData } = serviceStore();
@@ -333,13 +315,12 @@ export default function Navbar() {
     const doLogout = () => logout();
     const doDeleteAll = () => confirm("Delete all email data?") && deleteAllEmailData();
 
-    /* ── Loading spinner ── */
     if (isCheckingAuth) return (
         <>
             <style>{CSS}</style>
             <div style={{
                 position: "fixed", inset: 0, zIndex: 999,
-                background: T.pageBg,   // ← Home page bg
+                background: T.pageBg,
                 display: "flex", alignItems: "center", justifyContent: "center",
             }}>
                 <motion.div
@@ -348,91 +329,88 @@ export default function Navbar() {
                     style={{
                         width: 26, height: 26, borderRadius: "50%",
                         border: "2px solid rgba(255,255,255,0.1)",
-                        borderTopColor: T.accent,  // ← Home indigo accent
+                        borderTopColor: T.accent,
                     }}
                 />
             </div>
         </>
     );
 
-    /* ════════ PUBLIC NAV ════════ */
+    /*TODO: ════════ PUBLIC NAV ════════ */
     if (!authUser) return (
         <>
             <style>{CSS}</style>
             <div style={{ height: 72 }} />
 
             <div className="nb-pill-wrapper">
-            <motion.div
-                className="nb-pill"
-                initial={{ y: -48, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                    boxShadow: scrolled
-                        ? "0 8px 40px rgba(0,0,0,0.55), 0 0 20px rgba(99,102,241,0.1)"
-                        : "0 4px 20px rgba(0,0,0,0.25)",
-                    transition: "box-shadow 0.3s",
-                }}
-            >
-                <div className="nb-pill-inner">
-                    {/* Logo */}
-                    <div style={{ display: "flex", alignItems: "center", gap: 7, marginRight: 6 }}>
-                        <Logo size={24} radius={6} fs={12} />
-                        <span
-                            className="pill-links"
-                            style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 13, color: "#fff" }}
-                        >
-                            MailBlast
-                        </span>
-                    </div>
-
-                    <div style={{ width: "0.5px", height: 18, background: "rgba(255,255,255,0.1)", margin: "0 4px" }} />
-
-                    {/* Desktop links */}
-                    <div className="pill-links" style={{ display: "flex", alignItems: "center" }}>
-                        {PUBLIC_LINKS.map(({ to, label }, i) => (
-                            <motion.div
-                                key={to}
-                                initial={{ opacity: 0, y: -6 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.1 + i * 0.07 }}
+                <motion.div
+                    className="nb-pill"
+                    initial={{ y: -48, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                    style={{
+                        boxShadow: scrolled
+                            ? "0 8px 40px rgba(0,0,0,0.55), 0 0 20px rgba(99,102,241,0.1)"
+                            : "0 4px 20px rgba(0,0,0,0.25)",
+                        transition: "box-shadow 0.3s",
+                    }}
+                >
+                    <div className="nb-pill-inner">
+                        <div style={{ display: "flex", alignItems: "center", gap: 7, marginRight: 6 }}>
+                            <Logo size={24} radius={6} fs={12} />
+                            <span
+                                className="pill-links"
+                                style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 13, color: "#fff" }}
                             >
-                                <Link
-                                    to={to}
-                                    className={`nb-link${location.pathname === to ? " active" : ""}`}
-                                >
-                                    {label}
-                                </Link>
-                            </motion.div>
-                        ))}
-                    </div>
+                                MailBlast
+                            </span>
+                        </div>
 
-                    {/* Mobile burger */}
-                    <button
-                        onClick={() => setOpen(v => !v)}
-                        className="pill-burger"
-                        style={{
-                            display: "none",
-                            background: "rgba(255,255,255,0.06)",
-                            border: `0.5px solid rgba(255,255,255,0.1)`,
-                            borderRadius: 8, color: "#fff", cursor: "pointer",
-                            width: 34, height: 34,
-                            alignItems: "center", justifyContent: "center", marginLeft: 4,
-                        }}
-                    >
-                        <motion.div
-                            animate={{ rotate: open ? 90 : 0 }}
-                            transition={{ duration: 0.2 }}
-                            style={{ display: "flex" }}
+                        <div style={{ width: "0.5px", height: 18, background: "rgba(255,255,255,0.1)", margin: "0 4px" }} />
+
+                        <div className="pill-links" style={{ display: "flex", alignItems: "center" }}>
+                            {PUBLIC_LINKS.map(({ to, label }, i) => (
+                                <motion.div
+                                    key={to}
+                                    initial={{ opacity: 0, y: -6 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.1 + i * 0.07 }}
+                                >
+                                    <Link
+                                        to={to}
+                                        className={`nb-link${location.pathname === to ? " active" : ""}`}
+                                    >
+                                        {label}
+                                    </Link>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        <button
+                            onClick={() => setOpen(v => !v)}
+                            className="pill-burger"
+                            style={{
+                                display: "none",
+                                background: "rgba(255,255,255,0.06)",
+                                border: `0.5px solid rgba(255,255,255,0.1)`,
+                                borderRadius: 8, color: "#fff", cursor: "pointer",
+                                width: 34, height: 34,
+                                alignItems: "center", justifyContent: "center", marginLeft: 4,
+                            }}
                         >
-                            {open ? <HiX size={17} /> : <HiMenuAlt3 size={17} />}
-                        </motion.div>
-                    </button>
-                </div>
-            </motion.div>
+                            <motion.div
+                                animate={{ rotate: open ? 90 : 0 }}
+                                transition={{ duration: 0.2 }}
+                                style={{ display: "flex" }}
+                            >
+                                {open ? <HiX size={17} /> : <HiMenuAlt3 size={17} />}
+                            </motion.div>
+                        </button>
+                    </div>
+                </motion.div>
             </div>
 
-            {/* Mobile dropdown */}
+            {/*TODO: Mobile dropdown */}
             <AnimatePresence>
                 {open && (
                     <motion.div
@@ -471,12 +449,12 @@ export default function Navbar() {
         </>
     );
 
-    /* ════════ AUTHENTICATED SIDEBAR ════════ */
+    /*TODO: ════════ AUTHENTICATED SIDEBAR ════════ */
     return (
         <>
             <style>{CSS}</style>
 
-            {/* Desktop sidebar */}
+            {/*TODO: Desktop sidebar */}
             <motion.aside
                 className="sb-desktop"
                 initial={{ x: -40, opacity: 0 }}
@@ -490,7 +468,7 @@ export default function Navbar() {
                 />
             </motion.aside>
 
-            {/* Mobile top bar */}
+            {/*TODO: Mobile top bar */}
             <div className="sb-topbar" style={{
                 position: "fixed", top: 0, left: 0, right: 0, height: 54, zIndex: 50,
                 background: "rgba(6,6,18,0.98)",
@@ -524,7 +502,7 @@ export default function Navbar() {
                 </button>
             </div>
 
-            {/* Mobile drawer */}
+            {/*TODO: Mobile drawer */}
             <AnimatePresence>
                 {open && (
                     <>

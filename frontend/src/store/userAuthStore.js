@@ -6,22 +6,16 @@ import { mainUrl } from "../main";
 axios.defaults.withCredentials = true;
 
 export const useUserAuthStore = create((set, get) => ({
-    // ─── CRITICAL FIX ────────────────────────────────────────────────────
-    // Never seed authUser from localStorage.
-    // localStorage can be stale after logout + back button.
-    // The ONLY source of truth is the server (checkAuth).
-    // ─────────────────────────────────────────────────────────────────────
+    
     authUser: null,
-    isCheckingAuth: true,   // start TRUE so app waits for server before rendering
+    isCheckingAuth: true,
     isSignup: false,
     isLogin: false,
     isOtpVerify: false,
     isUserId: localStorage.getItem("userId") || null,
     isResendOtp: false,
 
-    /* ── checkAuth ──────────────────────────────────────────────────────── */
-    // Called ONCE on app mount. Until it resolves, isCheckingAuth = true
-    // so ProtectedRoute renders nothing (no flash of protected content).
+    /*TODO: ── checkAuth ──────────────────────────────────────────────────────── */
     checkAuth: async () => {
         set({ isCheckingAuth: true });
         try {
@@ -29,15 +23,14 @@ export const useUserAuthStore = create((set, get) => ({
                 withCredentials: true,
             });
             set({ authUser: res.data });
-        } catch {
-            // Cookie missing or expired → not logged in
+        } catch {   
             set({ authUser: null });
         } finally {
             set({ isCheckingAuth: false });
         }
     },
 
-    /* ── signup ─────────────────────────────────────────────────────────── */
+    /*TODO: ── signup ─────────────────────────────────────────────────────────── */
     signup: async (userData) => {
         set({ isSignup: true });
         try {
@@ -57,7 +50,7 @@ export const useUserAuthStore = create((set, get) => ({
         }
     },
 
-    /* ── login ──────────────────────────────────────────────────────────── */
+    /*TODO: ── login ──────────────────────────────────────────────────────────── */
     login: async (userData) => {
         set({ isLogin: true });
         try {
@@ -70,8 +63,6 @@ export const useUserAuthStore = create((set, get) => ({
                 error: (err) => err?.response?.data?.message || "Login failed",
             });
             const user = res?.data;
-            // Only store in Zustand — NOT localStorage
-            // The httpOnly cookie is the real session token
             set({ authUser: user });
             return { success: true, data: user };
         } catch (error) {
@@ -82,7 +73,7 @@ export const useUserAuthStore = create((set, get) => ({
         }
     },
 
-    /* ── otpVerify ──────────────────────────────────────────────────────── */
+    /*TODO: ── otpVerify ──────────────────────────────────────────────────────── */
     otpVerify: async (userData) => {
         set({ isOtpVerify: true });
         const userId = get().isUserId;
@@ -105,7 +96,7 @@ export const useUserAuthStore = create((set, get) => ({
         }
     },
 
-    /* ── resendOtp ──────────────────────────────────────────────────────── */
+    /*TODO: ── resendOtp ──────────────────────────────────────────────────────── */
     resendOtp: async (userData) => {
         set({ isResendOtp: true });
         const userId = get().isUserId;
@@ -127,7 +118,7 @@ export const useUserAuthStore = create((set, get) => ({
         }
     },
 
-    /* ── logout ─────────────────────────────────────────────────────────── */
+    /*TODO: ── logout ─────────────────────────────────────────────────────────── */
     logout: async () => {
         try {
             const logoutPromise = axios.get(`${mainUrl}/v1/api/logout`, {
@@ -143,14 +134,11 @@ export const useUserAuthStore = create((set, get) => ({
         } catch (error) {
             console.error(error);
         } finally {
-            // 1. Clear Zustand
             set({ authUser: null, isUserId: null });
 
-            // 2. Clear all localStorage + sessionStorage
             localStorage.clear();
             sessionStorage.clear();
 
-            // 3. Expire every client-readable cookie
             document.cookie.split(";").forEach((c) => {
                 const key = c.split("=")[0].trim();
                 ["/", "/api", "/v1", "/v1/api"].forEach((path) => {
@@ -159,8 +147,6 @@ export const useUserAuthStore = create((set, get) => ({
                 });
             });
 
-            // 4. Hard navigation — destroys JS heap + React tree.
-            //    Back button cannot restore the cached authenticated page.
             window.location.replace("/login");
         }
     },

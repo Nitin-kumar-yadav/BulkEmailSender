@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useUserAuthStore } from '../store/userAuthStore'
 import { serviceStore } from '../store/serviceStore'
 
+//TODO: ── Icons ──────────────────────────────────────────────────────
 const EyeIcon = ({ open }) => open ? (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -105,8 +106,6 @@ const Settings = () => {
     }
 
     const handleSave = () => {
-        // Here we would dispatch the actual save requests if backend routes existed
-        // For now, it visually saves as requested by the user flow.
         updateEmailPass({ emailAppPassword })
         updateUserPassword({ Password: userPassword })
         setSaved(true)
@@ -121,7 +120,7 @@ const Settings = () => {
             <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
-        /* ── Reset ── */
+        /*TODO: ── Reset ── */
         .stg-root, .stg-root *, .stg-root *::before, .stg-root *::after {
           box-sizing: border-box;
         }
@@ -145,14 +144,14 @@ const Settings = () => {
         .stg-root .sa2 { animation: stgIn .5s .14s cubic-bezier(.22,1,.36,1) both; }
         .stg-root .sa3 { animation: stgIn .5s .21s cubic-bezier(.22,1,.36,1) both; }
 
-        /* ── Ambient orbs ── */
+        /*TODO: ── Ambient orbs ── */
         .stg-orb {
           position: absolute; border-radius: 50%;
           pointer-events: none; filter: blur(100px); z-index: 0;
         }
         .stg-content { position: relative; z-index: 1; width: 100%; max-width: 1000px; }
 
-        /* ── Header ── */
+        /*TODO: ── Header ── */
         .stg-header {
             margin-bottom: 36px;
             border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -180,7 +179,7 @@ const Settings = () => {
             color: rgba(255,255,255,0.3);
         }
 
-        /* ── Layout Grid ── */
+        /*TODO: ── Layout Grid ── */
         .stg-grid {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
@@ -194,7 +193,7 @@ const Settings = () => {
           background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.08) 20%, rgba(255,255,255,0.08) 80%, transparent);
         }
 
-        /* ── Card Header ── */
+        /*TODO: ── Card Header ── */
         .stg-card-header { display: flex; alignItems: center; gap: 12px; }
         .stg-card-icon {
             width: 34px; height: 34px; border-radius: 10px;
@@ -203,7 +202,7 @@ const Settings = () => {
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* ── Forms ── */
+        /*TODO: ── Forms ── */
         .stg-field { display: flex; flex-direction: column; gap: 8px; }
         .stg-label {
             font-size: 11px; font-weight: 600;
@@ -242,7 +241,7 @@ const Settings = () => {
         }
         .stg-eye:hover { color: #a5b4fc; }
 
-        /* ── Save Button ── */
+        /*TODO: ── Save Button ── */
         .stg-save {
           display: inline-flex; align-items: center; gap: 8px;
           border: none; border-radius: 100px;
@@ -273,7 +272,7 @@ const Settings = () => {
           animation: stgPop .35s cubic-bezier(.34,1.56,.64,1) both;
         }
 
-        /* ── Credential Rows ── */
+        /*TODO: ── Credential Rows ── */
         .stg-cred-row {
             display: flex; flex-direction: column; gap: 8px;
             padding: 16px;
@@ -324,7 +323,7 @@ const Settings = () => {
         }
       `}</style>
 
-            {/* Page shell */}
+            {/*TODO: Page shell */}
             <div className="stg-root">
                 {/* Ambient orbs */}
                 <div className="stg-orb" style={{ width: 480, height: 480, top: -100, left: -50, background: 'rgba(99,102,241,0.15)' }} />
@@ -332,20 +331,17 @@ const Settings = () => {
 
                 <div className="stg-content">
 
-                    {/* ── Header ── */}
+                    {/*TODO: ── Header ── */}
                     <div className="stg-header sa0">
                         <p className="stg-header-tag">Configuration</p>
                         <h1 className="stg-header-title">Settings</h1>
                         <p className="stg-header-desc">Manage your credentials and account configuration</p>
                     </div>
 
-                    {/* ── Two-column layout ── */}
                     <div className="stg-grid">
 
-                        {/* ── LEFT: Edit form ── */}
                         <div className="stg-card sa1">
 
-                            {/* Section label */}
                             <div className="stg-card-header">
                                 <div className="stg-card-icon"><ShieldIcon /></div>
                                 <div>
@@ -354,7 +350,6 @@ const Settings = () => {
                                 </div>
                             </div>
 
-                            {/* Username */}
                             <div className="stg-field">
                                 <label className="stg-label">Username / Email</label>
                                 <input
@@ -366,7 +361,6 @@ const Settings = () => {
                                 />
                             </div>
 
-                            {/* App Password */}
                             <div className="stg-field">
                                 <label className="stg-label">App Password</label>
                                 <p style={{ margin: 0, fontSize: 12, color: 'rgba(255,255,255,0.22)', lineHeight: 1.5 }}>
@@ -393,7 +387,6 @@ const Settings = () => {
                                 </div>
                             </div>
 
-                            {/* User Password */}
                             <div className="stg-field">
                                 <label className="stg-label">Account Password</label>
                                 <div className="stg-input-wrap">
@@ -410,7 +403,6 @@ const Settings = () => {
                                 </div>
                             </div>
 
-                            {/* Save */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: 16, paddingTop: 8 }}>
                                 <button className="stg-save" onClick={handleSave}>
                                     <SaveIcon />
@@ -425,10 +417,8 @@ const Settings = () => {
                             </div>
                         </div>
 
-                        {/* ── Divider ── */}
                         <div className="stg-divider sa2" />
 
-                        {/* ── RIGHT: Credential preview ── */}
                         <div className="stg-card sa3">
 
                             <div>
@@ -464,7 +454,6 @@ const Settings = () => {
                             />
 
 
-                            {/* Security tip */}
                             <div style={{
                                 marginTop: 8, padding: '14px 16px', borderRadius: 14,
                                 background: 'rgba(99,102,241,0.06)',

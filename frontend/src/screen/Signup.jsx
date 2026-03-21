@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useUserAuthStore } from '../store/userAuthStore';
 import toast from 'react-hot-toast';
 
-/* ── Shared styles (identical to Login) ── */
+/*TODO: ── Shared styles (identical to Login) ── */
 const globalStyles = `
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
@@ -29,7 +29,7 @@ const globalStyles = `
     60%      { transform: translate(20px,30px) scale(1.06);   opacity: 0.3; }
   }
 
-  /* ── Ambient rotating border — same conic trick as Login ── */
+  /*TODO: ── Ambient rotating border — same conic trick as Login ── */
   .signup-card-wrap {
     position: relative;
     border-radius: 24px;
@@ -83,7 +83,7 @@ const globalStyles = `
     border-radius: 22.5px;
   }
 
-  /* Reuse same input + button + label styles from Login */
+  /*TODO: Reuse same input + button + label styles from Login */
   .input-field {
     width: 100%;
     background: rgba(255,255,255,0.04);
@@ -160,7 +160,7 @@ const globalStyles = `
     will-change: transform, opacity;
   }
 
-  /* password strength bar */
+  /*TODO: password strength bar */
   .strength-bar {
     height: 3px;
     border-radius: 2px;
@@ -168,7 +168,7 @@ const globalStyles = `
   }
 `;
 
-/* ── Framer variants (same as Login) ── */
+/*TODO: ── Framer variants (same as Login) ── */
 const cardVariants = {
     hidden: { opacity: 0, y: 32, scale: 0.97 },
     visible: {
@@ -185,7 +185,7 @@ const fadeUp = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
 };
 
-/* ── Password strength helper ── */
+/*TODO: ── Password strength helper ── */
 const getStrength = (pw) => {
     if (!pw) return { score: 0, label: '', color: 'transparent' };
     let score = 0;
@@ -200,7 +200,7 @@ const getStrength = (pw) => {
     return { score, label: 'Strong', color: '#14b8a6' };
 };
 
-/* ── Eye icon ── */
+/*TODO: ── Eye icon ── */
 const EyeIcon = ({ open }) => open ? (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
@@ -212,7 +212,7 @@ const EyeIcon = ({ open }) => open ? (
     </svg>
 );
 
-/* ── Input field with left icon ── */
+/*TODO: ── Input field with left icon ── */
 const InputRow = ({ label, icon, type = 'text', placeholder, value, onChange, onFocus, onBlur, focused, name, rightSlot, hasError }) => (
     <motion.div variants={fadeUp}>
         <label className="label-text">{label}</label>
@@ -245,7 +245,7 @@ const InputRow = ({ label, icon, type = 'text', placeholder, value, onChange, on
     </motion.div>
 );
 
-/* ════════════════════════════════════════════ */
+/*TODO: ════════════════════SIGNUP COMPONENT═════════════════════ */
 const Signup = () => {
     const navigate = useNavigate();
     const { isSignup, signup } = useUserAuthStore();
@@ -299,7 +299,6 @@ const Signup = () => {
                 overflow: 'hidden',
             }}>
 
-                {/* ── Background orbs ── */}
                 <div className="orb" style={{
                     width: 480, height: 480, background: '#0d9488',
                     top: '-12%', right: '-8%', opacity: 0.28,
@@ -316,14 +315,11 @@ const Signup = () => {
                     animation: 'orbPulse3 20s ease-in-out infinite',
                 }} />
 
-                {/* Dot grid */}
                 <div aria-hidden style={{
                     position: 'absolute', inset: 0, pointerEvents: 'none',
                     backgroundImage: 'radial-gradient(circle, rgba(148,163,184,0.07) 1px, transparent 1px)',
                     backgroundSize: '36px 36px',
                 }} />
-
-                {/* ── Card ── */}
                 <motion.div
                     variants={cardVariants}
                     initial="hidden"
@@ -333,7 +329,7 @@ const Signup = () => {
                     <div className="signup-card-wrap">
                         <div className="signup-card">
 
-                            {/* Header */}
+                            {/*TODO: Header */}
                             <motion.div
                                 variants={fadeUp} initial="hidden" animate="visible"
                                 style={{ textAlign: 'center', marginBottom: 28 }}
@@ -370,14 +366,13 @@ const Signup = () => {
                                 </p>
                             </motion.div>
 
-                            {/* Form */}
+                            {/*TODO: Form */}
                             <motion.form
                                 variants={stagger} initial="hidden" animate="visible"
                                 onSubmit={handleSignup}
                                 style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
                             >
 
-                                {/* Name */}
                                 <InputRow
                                     label="Full name" name="name" placeholder="John Doe"
                                     value={userData.Name} onChange={set('Name')}
@@ -389,7 +384,6 @@ const Signup = () => {
                                     }
                                 />
 
-                                {/* Email */}
                                 <InputRow
                                     label="Email address" name="email" type="email" placeholder="hello@example.com"
                                     value={userData.Email} onChange={set('Email')}
@@ -401,7 +395,6 @@ const Signup = () => {
                                     }
                                 />
 
-                                {/* Password + strength meter */}
                                 <motion.div variants={fadeUp}>
                                     <label className="label-text">Password</label>
                                     <div style={{ position: 'relative' }}>
@@ -442,8 +435,6 @@ const Signup = () => {
                                             <EyeIcon open={showPass} />
                                         </button>
                                     </div>
-
-                                    {/* Strength meter */}
                                     <AnimatePresence>
                                         {userData.Password && (
                                             <motion.div
@@ -480,7 +471,6 @@ const Signup = () => {
                                     </AnimatePresence>
                                 </motion.div>
 
-                                {/* Confirm password */}
                                 <motion.div variants={fadeUp}>
                                     <label className="label-text">Confirm password</label>
                                     <div style={{ position: 'relative' }}>
@@ -524,7 +514,6 @@ const Signup = () => {
                                         </button>
                                     </div>
 
-                                    {/* Mismatch error */}
                                     <AnimatePresence>
                                         {pwMismatch && (
                                             <motion.p
@@ -543,7 +532,6 @@ const Signup = () => {
                                     </AnimatePresence>
                                 </motion.div>
 
-                                {/* ── Submit button with 3-dot loader + shimmer ── */}
                                 <motion.div variants={fadeUp} style={{ marginTop: 4 }}>
                                     <button
                                         type="submit"
@@ -551,7 +539,6 @@ const Signup = () => {
                                         className="signup-btn"
                                         style={{ opacity: isSignup ? 0.85 : 1 }}
                                     >
-                                        {/* Shimmer sweep while loading */}
                                         <AnimatePresence>
                                             {isSignup && (
                                                 <motion.span
@@ -572,7 +559,6 @@ const Signup = () => {
 
                                         <AnimatePresence mode="wait">
                                             {isSignup ? (
-                                                /* 3-dot bounce loader */
                                                 <motion.span
                                                     key="loading"
                                                     initial={{ opacity: 0, y: 6 }}
@@ -611,7 +597,6 @@ const Signup = () => {
                                                     <span style={{ letterSpacing: '0.04em' }}>Creating account</span>
                                                 </motion.span>
                                             ) : (
-                                                /* Idle state with nudging arrow */
                                                 <motion.span
                                                     key="idle"
                                                     initial={{ opacity: 0, y: 6 }}
@@ -639,7 +624,6 @@ const Signup = () => {
 
                             </motion.form>
 
-                            {/* Divider */}
                             <div style={{
                                 display: 'flex', alignItems: 'center', gap: 12,
                                 margin: '22px 0 18px',
@@ -653,7 +637,6 @@ const Signup = () => {
                                 <div style={{ flex: 1, height: '0.5px', background: 'rgba(255,255,255,0.07)' }} />
                             </div>
 
-                            {/* Login link */}
                             <p style={{
                                 textAlign: 'center',
                                 fontFamily: "'Syne', sans-serif",

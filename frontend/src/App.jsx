@@ -11,14 +11,12 @@ import { useUserAuthStore } from "./store/userAuthStore";
 import Compose from "./admin/Compose";
 import Settings from "./admin/Settings";
 
-/* ── Guest-only: logged-in users bounce to /dashboard ── */
 const GuestRoute = ({ children }) => {
     const { authUser, isCheckingAuth } = useUserAuthStore();
     if (isCheckingAuth) return null;
     return authUser ? <Navigate to="/dashboard" replace /> : children;
 };
 
-/* ── Protected: guests bounce to /login with "from" saved ── */
 const ProtectedRoute = ({ children }) => {
     const { authUser, isCheckingAuth } = useUserAuthStore();
     const location = useLocation();
@@ -28,7 +26,6 @@ const ProtectedRoute = ({ children }) => {
         : <Navigate to="/login" state={{ from: location }} replace />;
 };
 
-/* ══════════════════════════════════════════════════════════ */
 const App = () => {
     const { checkAuth, authUser, isCheckingAuth } = useUserAuthStore();
 
@@ -59,20 +56,20 @@ const App = () => {
             <Navbar />
             <Routes>
 
-                {/* ── Public (guests only — logged-in users redirect to dashboard) ── */}
+                {/*TODO: ── Public (guests only — logged-in users redirect to dashboard) ── */}
                 <Route path="/" element={<GuestRoute><Home /></GuestRoute>} />
                 <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
                 <Route path="/signup" element={<GuestRoute><Signup /></GuestRoute>} />
 
-                {/* OTP verification — open to everyone */}
+                {/*TODO: ── OTP verification — open to everyone ── */}
                 <Route path="/verify-otp" element={<Verification />} />
 
-                {/* ── Protected (guests redirect to /login) ── */}
+                {/*TODO: ── Protected (guests redirect to /login) ── */}
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/compose" element={<ProtectedRoute><Compose /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
-                {/* ── Fallback ── */}
+                {/*TODO: ── Fallback ── */}
                 <Route
                     path="*"
                     element={authUser ? <Navigate to="/dashboard" replace /> : <Navigate to="/" replace />}

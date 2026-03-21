@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUserAuthStore } from '../store/userAuthStore';
 
+/*TODO: ── Login Page ── */
 const globalStyles = `
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
@@ -76,7 +77,7 @@ const globalStyles = `
     overflow: hidden;
   }
 
-  /* inner grid pattern */
+  /*TODO: inner grid pattern */
   .login-card::before {
     content: '';
     position: absolute;
@@ -159,7 +160,7 @@ const globalStyles = `
   }
 `;
 
-/* ── Variants ── */
+/*TODO: ── Variants ── */
 const cardVariants = {
   hidden: { opacity: 0, y: 32, scale: 0.97 },
   visible: {
@@ -176,7 +177,7 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
 };
 
-/* ── Password eye toggle icon ── */
+/*TODO:  ── Password eye toggle icon ── */
 const EyeIcon = ({ open }) => open ? (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
@@ -188,7 +189,7 @@ const EyeIcon = ({ open }) => open ? (
   </svg>
 );
 
-/* ════════════════════════════════════════ */
+/*TODO: ----Login Page---- */
 const Login = () => {
   const [userData, setUserData] = useState({ Email: '', Password: '' });
   const [showPass, setShowPass] = useState(false);
@@ -210,7 +211,6 @@ const Login = () => {
     <>
       <style>{globalStyles}</style>
 
-      {/* ── Full-screen container ── */}
       <div style={{
         minHeight: '100vh',
         display: 'flex',
@@ -221,8 +221,6 @@ const Login = () => {
         position: 'relative',
         overflow: 'hidden',
       }}>
-
-        {/* Background orbs */}
         <div className="orb" style={{
           width: 500, height: 500,
           background: '#4f46e5',
@@ -237,15 +235,13 @@ const Login = () => {
           opacity: 0.2,
           animation: 'orbPulse2 15s ease-in-out infinite',
         }} />
-
-        {/* Background dot grid */}
         <div aria-hidden style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
           backgroundImage: 'radial-gradient(circle, rgba(148,163,184,0.07) 1px, transparent 1px)',
           backgroundSize: '36px 36px',
         }} />
 
-        {/* ── Card ── */}
+        {/*TODO: ── Card ── */}
         <motion.div
           variants={cardVariants}
           initial="hidden"
@@ -255,7 +251,6 @@ const Login = () => {
           <div className="login-card-wrap">
             <div className="login-card">
 
-              {/* Top logo mark */}
               <motion.div
                 variants={fadeUp}
                 initial="hidden"
@@ -267,7 +262,7 @@ const Login = () => {
                   marginBottom: 32,
                 }}
               >
-                {/* Animated logo */}
+                
                 <motion.div
                   animate={{ y: [0, -6, 0] }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
@@ -304,7 +299,6 @@ const Login = () => {
                 </p>
               </motion.div>
 
-              {/* Form */}
               <motion.form
                 variants={stagger}
                 initial="hidden"
@@ -313,7 +307,6 @@ const Login = () => {
                 style={{ display: 'flex', flexDirection: 'column', gap: 18 }}
               >
 
-                {/* Email */}
                 <motion.div variants={fadeUp}>
                   <label className="label-text">Email address</label>
                   <div style={{ position: 'relative' }}>
@@ -342,7 +335,6 @@ const Login = () => {
                   </div>
                 </motion.div>
 
-                {/* Password */}
                 <motion.div variants={fadeUp}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                     <label className="label-text" style={{ margin: 0 }}>Password</label>
@@ -361,7 +353,6 @@ const Login = () => {
                     </a>
                   </div>
                   <div style={{ position: 'relative' }}>
-                    {/* lock icon */}
                     <div style={{
                       position: 'absolute', left: 14, top: '50%',
                       transform: 'translateY(-50%)',
@@ -383,7 +374,6 @@ const Login = () => {
                       style={{ paddingLeft: 42, paddingRight: 42 }}
                       required
                     />
-                    {/* eye toggle */}
                     <button
                       type="button"
                       onClick={() => setShowPass(v => !v)}
@@ -402,8 +392,6 @@ const Login = () => {
                     </button>
                   </div>
                 </motion.div>
-
-                {/* Submit */}
                 <motion.div variants={fadeUp} style={{ marginTop: 4 }}>
                   <button
                     type="submit"
@@ -412,11 +400,9 @@ const Login = () => {
                     style={{
                       position: 'relative',
                       overflow: 'hidden',
-                      // dim slightly when loading
                       opacity: isLogin ? 0.85 : 1,
                     }}
                   >
-                    {/* Shimmer sweep overlay while loading */}
                     <AnimatePresence>
                       {isLogin && (
                         <motion.span
@@ -437,7 +423,6 @@ const Login = () => {
                       )}
                     </AnimatePresence>
 
-                    {/* Button content */}
                     <AnimatePresence mode="wait">
                       {isLogin ? (
                         <motion.span
@@ -455,7 +440,6 @@ const Login = () => {
                             zIndex: 3,
                           }}
                         >
-                          {/* 3-dot pulse loader */}
                           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                             {[0, 1, 2].map((i) => (
                               <motion.span
@@ -498,7 +482,6 @@ const Login = () => {
                           }}
                         >
                           Sign in
-                          {/* Arrow that nudges right on hover */}
                           <motion.span
                             animate={{ x: [0, 3, 0] }}
                             transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
@@ -513,7 +496,6 @@ const Login = () => {
 
               </motion.form>
 
-              {/* Divider */}
               <motion.div
                 variants={fadeUp}
                 initial="hidden"
@@ -532,7 +514,6 @@ const Login = () => {
                 <div style={{ flex: 1, height: '0.5px', background: 'rgba(255,255,255,0.07)' }} />
               </motion.div>
 
-              {/* Sign up link */}
               <motion.p
                 variants={fadeUp}
                 initial="hidden"

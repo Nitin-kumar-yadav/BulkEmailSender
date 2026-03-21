@@ -9,6 +9,7 @@ export const serviceStore = create((set) => ({
     error: null,
     EmailData: {},
 
+    //TODO: get report list
     getReportList: async () => {
         set({ loading: true, error: null });
 
@@ -17,18 +18,22 @@ export const serviceStore = create((set) => ({
                 `${mainUrl}/v1/api/email-report`,
                 { withCredentials: true }
             );
-            // console.log(res?.data?.data?.emailMessages[0].recipients)
+
+            console.log(res?.data?.data?.emailMessages[0]?.createdAt);
+
             set({
                 reportList: res?.data?.data?.emailMessages?.[0]?.recipients || [],
-                loading: false
-            });
-            set({
                 EmailData: res?.data?.data || {},
                 loading: false
             });
-            if (res?.data?.data?.emailMessages?.[0]?.recipients?.length > 0) {
+
+            const hasShownToast = sessionStorage.getItem('reportToastShown');
+
+            if (res?.data?.data?.emailMessages?.[0]?.recipients?.length > 0 && !hasShownToast) {
                 toast.success(res?.data?.message);
+                sessionStorage.setItem('reportToastShown', 'true');
             }
+
         } catch (err) {
             console.error("Failed to fetch report list:", err?.response?.data?.message);
 
@@ -38,6 +43,7 @@ export const serviceStore = create((set) => ({
             });
         }
     },
+    //TODO: delete all email data
     deleteAllEmailData: async () => {
         set({ loading: true, error: null });
 
@@ -59,6 +65,7 @@ export const serviceStore = create((set) => ({
             });
         }
     },
+    //TODO: upload email message
     uploadEmailMessage: async (data) => {
         set({ loading: true, error: null });
 
@@ -82,7 +89,7 @@ export const serviceStore = create((set) => ({
             });
         }
     },
-
+    //TODO: upload file
     uploadFile: async (data) => {
         set({ loading: true, error: null });
 
@@ -106,6 +113,7 @@ export const serviceStore = create((set) => ({
             });
         }
     },
+    //TODO: update app password
     updateAppPassword: async (userData) => {
         try {
             const res = await axios.post(`${mainUrl}/v1/api/email-pass`, userData, {
@@ -116,6 +124,7 @@ export const serviceStore = create((set) => ({
             toast.error(error?.response?.data?.message || "Email Password failed");
         }
     },
+    //TODO: update USER PASSWORD
     updateEmailPass: async (userData) => {
         try {
             const res = await axios.put(`${mainUrl}/v1/api/update-email-pass`, userData, {
@@ -124,6 +133,30 @@ export const serviceStore = create((set) => ({
             toast.success(res?.data?.message);
         } catch (error) {
             toast.error(error?.response?.data?.message || "Email Password update failed");
+        }
+    },
+    //TODO: open AI controller, AI Writer
+    openAIController: async (data) => {
+        set({ loading: true, error: null });
+
+        try {
+            const res = await axios.post(
+                `${mainUrl}/v1/api/open-ai`,
+                data,
+                { withCredentials: true }
+            );
+            set({
+                loading: false
+            });
+            return res;
+        } catch (err) {
+            console.error("Failed to upload email message:", err?.response?.data?.message);
+            toast.error(err?.response?.data?.message);
+
+            set({
+                error: err?.response?.data?.message || "Something went wrong",
+                loading: false
+            });
         }
     }
 }));

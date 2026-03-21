@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { serviceStore } from "../store/serviceStore";
 
 const Compose = () => {
-  const { uploadFile, uploadEmailMessage } = serviceStore();
+  const { uploadFile, uploadEmailMessage, openAIController } = serviceStore();
   const [formData, setFormData] = useState({ subject: "", message: "" });
   const [scheduleDate, setScheduleDate] = useState("");
   const [scheduleTime, setScheduleTime] = useState("");
@@ -19,16 +19,18 @@ const Compose = () => {
       showToast(`Please enter some ${field} to correct.`, false);
       return;
     }
-    setIsAiLoading((prev) => ({ ...prev, [field]: true }));
-    // Mock AI correction timeout
-    setTimeout(() => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: prev[field] + (field === 'subject' ? " ✨" : "\n\n(Enhanced by AI ✨)")
-      }));
+    try {
+      const res = await openAIController({ field, text: formData[field] });
+      if (res?.data?.message) {
+        setFormData((prev) => ({ ...prev, [field]: res.data.message }));
+        showToast(`${field.charAt(0).toUpperCase() + field.slice(1)} enhanced by AI!`);
+      }
+    } catch (error) {
+      console.error("AI correction failed:", error);
+      showToast(`Failed to enhance ${field}.`, false);
+    } finally {
       setIsAiLoading((prev) => ({ ...prev, [field]: false }));
-      showToast(`${field.charAt(0).toUpperCase() + field.slice(1)} enhanced by AI!`);
-    }, 1500);
+    }
   };
 
   const showToast = (message, success = true) => {
@@ -86,12 +88,12 @@ const Compose = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap');
 
-        /* ── Reset ── */
+        /*TODO: ── Reset ── */
         .cmp-root, .cmp-root *, .cmp-root *::before, .cmp-root *::after {
           box-sizing: border-box;
         }
 
-        /* ── Shell ── */
+        /*TODO: ── Shell ── */
         .cmp-root {
           font-family: 'Syne', sans-serif;
           margin-left: 230px;
@@ -101,7 +103,7 @@ const Compose = () => {
           overflow-x: hidden;
         }
 
-        /* ── Animations ── */
+        /*TODO: ── Animations ── */
         @keyframes cmpSlideIn {
           from { opacity: 0; transform: translateY(22px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -111,7 +113,7 @@ const Compose = () => {
         .cmp-root .anim-2 { animation: cmpSlideIn .5s .16s cubic-bezier(.22,1,.36,1) both; }
         .cmp-root .anim-3 { animation: cmpSlideIn .5s .24s cubic-bezier(.22,1,.36,1) both; }
 
-        /* ── Header ── */
+        /*TODO: ── Header ── */
         .cmp-header {
           display: flex;
           align-items: flex-end;
@@ -138,7 +140,7 @@ const Compose = () => {
           letter-spacing: -0.01em;
         }
 
-        /* ── Step pills ── */
+        /*TODO: ── Step pills ── */
         .cmp-steps { display: flex; align-items: center; gap: 6px; }
         .cmp-step-pill {
           padding: 5px 14px;
@@ -156,7 +158,7 @@ const Compose = () => {
         }
         .cmp-step-sep { color: rgba(255,255,255,0.12); font-size: 13px; }
 
-        /* ── Grid ── */
+        /*TODO: ── Grid ── */
         .cmp-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -164,7 +166,7 @@ const Compose = () => {
           margin-bottom: 24px;
         }
 
-        /* ── Card ── */
+        /*TODO: ── Card ── */
         .cmp-card {
           border-radius: 20px;
           padding: 28px;
@@ -194,7 +196,7 @@ const Compose = () => {
           margin-top: -6px;
         }
 
-        /* ── Drop zone ── */
+        /*TODO: ── Drop zone ── */
         .cmp-dropzone {
           flex: 1;
           min-height: 200px;
@@ -248,7 +250,7 @@ const Compose = () => {
           display: flex; align-items: center; justify-content: center;
         }
 
-        /* ── Inputs ── */
+        /*TODO: ── Inputs ── */
         .cmp-field { display: flex; flex-direction: column; gap: 8px; }
         .cmp-field-grow { flex: 1; }
         .cmp-label {
@@ -285,7 +287,7 @@ const Compose = () => {
           display: flex; align-items: center; justify-content: space-between;
         }
 
-        /* ── Send row ── */
+        /*TODO: ── Send row ── */
         .cmp-send-row {
           display: flex; align-items: center;
           justify-content: space-between;
@@ -295,7 +297,7 @@ const Compose = () => {
         }
         .cmp-send-hint { font-size: 12px; color: rgba(255,255,255,0.18); }
 
-        /* ── Send button ── */
+        /*TODO: ── Send button ── */
         .cmp-send {
           position: relative; overflow: hidden; border: none;
           border-radius: 100px;
@@ -399,7 +401,7 @@ const Compose = () => {
           animation: cmpSpin .7s linear infinite;
         }
 
-        /* ── Responsive ── */
+        /*TODO: ── Responsive ── */
         @media (max-width: 767px) {
           .cmp-root {
             margin-left: 0;
@@ -419,18 +421,12 @@ const Compose = () => {
           .cmp-grid { gap: 16px; }
         }
       `}</style>
-
-      {/* Page shell */}
       <div className="cmp-root">
-
-        {/* ── Header ── */}
         <div className="cmp-header anim-0">
           <div>
             <p className="cmp-header-tag">NEW CAMPAIGN</p>
             <h1 className="cmp-header-title">Compose Email</h1>
           </div>
-
-          {/* Step pills */}
           <div className="cmp-steps">
             {["Recipients", "Message", "Send"].map((s, i) => (
               <React.Fragment key={s}>
@@ -446,11 +442,7 @@ const Compose = () => {
             ))}
           </div>
         </div>
-
-        {/* ── Two-column grid ── */}
         <div className="cmp-grid">
-
-          {/* Left — Recipients */}
           <div className="cmp-card anim-1">
             <div className="cmp-card-header">
               <div className="cmp-card-icon">
@@ -468,7 +460,7 @@ const Compose = () => {
               Upload an Excel or CSV file containing your contact list.
             </p>
 
-            {/* Drop zone */}
+            {/*TODO: Drop zone */}
             <div
               className={`cmp-dropzone ${isDragging ? "drag" : ""} ${fileName ? "filled" : ""}`}
               onClick={() => fileInputRef.current?.click()}
@@ -507,7 +499,7 @@ const Compose = () => {
             </div>
           </div>
 
-          {/* Right — Subject + Message */}
+          
           <div className="cmp-card anim-2">
             <div className="cmp-card-header">
               <div className="cmp-card-icon">
@@ -518,14 +510,17 @@ const Compose = () => {
               <span className="cmp-card-label">Message</span>
             </div>
 
-            {/* Subject */}
+            {/*TODO: Subject */}
             <div className="cmp-field">
               <div className="cmp-body-row">
                 <label className="cmp-label">Subject</label>
-                <button className="cmp-ai-btn" onClick={(e) => { e.preventDefault(); handleAICorrect("subject"); }} disabled={isAiLoading.subject}>
+
+                {/* TODO: Temporary disabled */}
+
+                {/* <button className="cmp-ai-btn" onClick={(e) => { e.preventDefault(); handleAICorrect("subject"); }} disabled={isAiLoading.subject}>
                   {isAiLoading.subject ? <span className="cmp-ai-spinner" /> : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /></svg>}
                   {isAiLoading.subject ? "Fixing..." : "AI Correct"}
-                </button>
+                </button> */}
               </div>
               <input
                 type="text"
@@ -537,7 +532,7 @@ const Compose = () => {
               />
             </div>
 
-            {/* Body */}
+            {/* TODO: Body */}
             <div className="cmp-field cmp-field-grow">
               <div className="cmp-body-row">
                 <label className="cmp-label">Body</label>
@@ -563,7 +558,7 @@ const Compose = () => {
           </div>
         </div>
 
-        {/* ── Schedule ── */}
+        {/*TODO: ── Schedule ── */}
         <div className="cmp-schedule-grid anim-3">
           <div className="cmp-field">
             <label className="cmp-label">Schedule Date</label>
@@ -585,7 +580,7 @@ const Compose = () => {
           </div>
         </div>
 
-        {/* ── Send row ── */}
+        {/*TODO: ── Send row ── */}
         <div className="cmp-send-row anim-3">
           <p className="cmp-send-hint">
             {fileName && formData.subject && formData.message
@@ -600,7 +595,7 @@ const Compose = () => {
         </div>
       </div>
 
-      {/* Toast notification */}
+      {/*TODO: Toast notification */}
       <div className={`cmp-toast${toast.show ? " show" : ""}`}>
         <div className="cmp-toast-dot" style={{ background: toast.success ? "#34d399" : "#f87171" }} />
         {toast.message}

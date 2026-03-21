@@ -164,6 +164,7 @@ export const otpVerify = async (req, res) => {
     }
 };
 
+//TODO: ================= RESEND OTP =================
 export const resendOtp = async (req, res) => {
     const { _id } = req.query;
 
@@ -203,6 +204,7 @@ export const resendOtp = async (req, res) => {
     }
 }
 
+//TODO: ================= UPDATE USER PASSWORD =================
 export const updateUserPassword = async (req, res) => {
     try {
         const userId = req.user?._id;

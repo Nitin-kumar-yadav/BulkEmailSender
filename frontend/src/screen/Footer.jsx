@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
+/*TODO:  ── Footer Styles ── */
 const globalStyles = `
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
@@ -119,7 +120,7 @@ const globalStyles = `
   .newsletter-btn:active { transform: scale(0.97); }
 `;
 
-/* ── Data ── */
+/*TODO:  ── Data ── */
 const sections = [
     {
         title: "Services",
@@ -150,6 +151,7 @@ const sections = [
     },
 ];
 
+/*TODO:  ── Socials ── */
 const socials = [
     {
         label: "Twitter / X",
@@ -180,7 +182,7 @@ const socials = [
     },
 ];
 
-/* ── Variants ── */
+/*TODO:  ── Variants ── */
 const colVariants = {
     hidden: {},
     visible: { transition: { staggerChildren: 0.06 } },
@@ -190,7 +192,7 @@ const linkVariants = {
     visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
 };
 
-/* ══════════════════════════════════════════ */
+/*TODO:  ── Footer ── */
 const Footer = () => {
     const footerRef = useRef(null);
     const inView = useInView(footerRef, { once: true, margin: "-60px" });
@@ -209,7 +211,6 @@ const Footer = () => {
                     overflow: "hidden",
                 }}
             >
-                {/* Background grid */}
                 <div
                     aria-hidden
                     style={{
@@ -219,7 +220,6 @@ const Footer = () => {
                     }}
                 />
 
-                {/* Ambient glow top-left */}
                 <div
                     aria-hidden
                     style={{
@@ -232,7 +232,6 @@ const Footer = () => {
 
                 <div style={{ maxWidth: 1100, margin: "0 auto", padding: "4rem 1.5rem 0", position: "relative", zIndex: 1 }}>
 
-                    {/* ── Top row: Brand + Newsletter ── */}
                     <div style={{
                         display: "flex",
                         flexWrap: "wrap",
@@ -242,14 +241,12 @@ const Footer = () => {
                         marginBottom: 48,
                     }}>
 
-                        {/* Brand block */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={inView ? { opacity: 1, y: 0 } : {}}
                             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                             style={{ maxWidth: 300 }}
                         >
-                            {/* Logo */}
                             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
                                 <div style={{
                                     width: 34, height: 34, borderRadius: 9,
@@ -273,7 +270,6 @@ const Footer = () => {
                                 Send bulk emails to thousands of customers — free, fast, and with zero investment required.
                             </p>
 
-                            {/* Status badge */}
                             <div style={{
                                 display: "inline-flex", alignItems: "center", gap: 7,
                                 padding: "5px 12px", borderRadius: 9999,
@@ -289,7 +285,6 @@ const Footer = () => {
                             </div>
                         </motion.div>
 
-                        {/* Newsletter */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -317,7 +312,6 @@ const Footer = () => {
 
                     <div className="footer-divider" style={{ marginBottom: 40 }} />
 
-                    {/* ── Link columns ── */}
                     <div style={{
                         display: "grid",
                         gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
@@ -355,7 +349,6 @@ const Footer = () => {
 
                     <div className="footer-divider" />
 
-                    {/* ── Bottom bar ── */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={inView ? { opacity: 1 } : {}}
@@ -369,7 +362,6 @@ const Footer = () => {
                             padding: "20px 0 28px",
                         }}
                     >
-                        {/* Copyright */}
                         <span style={{
                             fontFamily: "'DM Mono', monospace",
                             fontSize: 11,
@@ -379,7 +371,6 @@ const Footer = () => {
                             © {new Date().getFullYear()} MailBlast — All rights reserved.
                         </span>
 
-                        {/* Legal links */}
                         <div style={{ display: "flex", gap: 20 }}>
                             {["Privacy", "Terms", "Cookies"].map(item => (
                                 <a key={item} href={`#${item.toLowerCase()}`} className="footer-link">
@@ -388,7 +379,6 @@ const Footer = () => {
                             ))}
                         </div>
 
-                        {/* Socials */}
                         <div style={{ display: "flex", gap: 8 }}>
                             {socials.map(s => (
                                 <a key={s.label} href={s.href} target="_blank" className="social-btn" aria-label={s.label}>

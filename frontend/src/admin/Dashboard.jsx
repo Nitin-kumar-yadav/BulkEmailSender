@@ -3,7 +3,9 @@ import Report from './Report'
 
 const Dashboard = () => {
   return (
-    <Report />
+    <>
+      <Report />
+    </>
   )
 }
 

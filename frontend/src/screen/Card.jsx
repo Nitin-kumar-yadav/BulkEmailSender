@@ -1,20 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 
-/* ─────────────────────────────────────────
-   3D TILT + MAGNETIC GLOW PRICING CARDS
-   ─────────────────────────────────────────
-   Technique:
-   • Mouse move → compute rotateX/rotateY from
-     cursor offset within the card bounds.
-   • A radial "glow" follows the cursor inside
-     the card (spotlight effect).
-   • perspective() on the wrapper enables
-     true CSS 3D projection.
-   • All transforms run on GPU via will-change.
-   • Framer Motion handles entrance stagger.
-───────────────────────────────────────── */
-
+/*TODO: ── 3D TILT + MAGNETIC GLOW PRICING CARDS ── */
 const globalStyles = `
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
@@ -79,7 +66,7 @@ const globalStyles = `
     background: linear-gradient(160deg, rgba(22,18,48,0.95), rgba(12,12,26,0.98));
   }
 
-  /* cursor glow spotlight */
+  /*TODO:  cursor glow spotlight */
   .card-glow {
     position: absolute;
     width: 280px; height: 280px;
@@ -167,6 +154,8 @@ const globalStyles = `
   }
 `;
 
+/*FIXME:  ── Pricing Plans Data ── */
+
 const plans = [
   {
     name: "Free",
@@ -219,7 +208,7 @@ const plans = [
   },
 ];
 
-/* ── Single 3D tilt card ── */
+/*TODO: ── Single 3D tilt card ── */
 const PricingCard = ({ plan, index }) => {
   const cardRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -233,12 +222,12 @@ const PricingCard = ({ plan, index }) => {
     const rect = card.getBoundingClientRect();
     const cx = e.clientX - rect.left;
     const cy = e.clientY - rect.top;
-    const nx = (cx / rect.width  - 0.5) * 2;  // -1 → 1
+    const nx = (cx / rect.width - 0.5) * 2;  // -1 → 1
     const ny = (cy / rect.height - 0.5) * 2;
 
     setTilt({ x: -ny * 12, y: nx * 12 });   // max 12° tilt
     setGlow({
-      x: `${(cx / rect.width)  * 100}%`,
+      x: `${(cx / rect.width) * 100}%`,
       y: `${(cy / rect.height) * 100}%`,
       opacity: 1,
     });
@@ -393,7 +382,7 @@ const PricingCard = ({ plan, index }) => {
   );
 };
 
-/* ══════════════════════════════════════════ */
+/*TODO:  ── Pricing ── */
 const Pricing = () => {
   const headRef = useRef(null);
   const headInView = useInView(headRef, { once: true, margin: "-40px" });
@@ -413,9 +402,7 @@ const Pricing = () => {
         textAlign: "center",
       }}>
 
-        {/* Header */}
         <div ref={headRef}>
-          {/* Eyebrow */}
           <motion.div
             initial={{ opacity: 0, y: -12 }}
             animate={headInView ? { opacity: 1, y: 0 } : {}}
@@ -483,7 +470,6 @@ const Pricing = () => {
           </motion.p>
         </div>
 
-        {/* Cards grid */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
@@ -497,7 +483,6 @@ const Pricing = () => {
           ))}
         </div>
 
-        {/* Footer note */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

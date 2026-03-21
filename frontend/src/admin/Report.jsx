@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { serviceStore } from "../store/serviceStore";
 
-// ── Icons ──────────────────────────────────────────────────────
+//TODO: ── Icons ──────────────────────────────────────────────────────
 const SearchIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -37,7 +37,7 @@ const ClockIcon = () => (
     </svg>
 );
 
-// ── Helpers ────────────────────────────────────────────────────
+//TODO: ── Helpers ────────────────────────────────────────────────────
 const toArray = (data) => {
     if (!data) return [];
     if (Array.isArray(data)) return data;
@@ -52,7 +52,7 @@ const COLS = ["#", "Email", "Name", "ID", "Created At", "Status"];
 const COL_KEYS = ["index", "email", "name", "_id", "createdAt", "status"];
 const pad = (n) => String(n).padStart(2, "0");
 
-// ── useTimer hook ──────────────────────────────────────────────
+//TODO: ── useTimer hook ──────────────────────────────────────────────
 const useTimer = (targetDate) => {
     const [timeLeft, setTimeLeft] = useState(null);
 
@@ -79,7 +79,7 @@ const useTimer = (targetDate) => {
     return timeLeft;
 };
 
-// ── StatusBadge ────────────────────────────────────────────────
+//TODO: ── StatusBadge ────────────────────────────────────────────────
 const StatusBadge = ({ status }) => {
     const isSuccess = status === "success";
     const isPending = status === "pending";
@@ -100,7 +100,7 @@ const StatusBadge = ({ status }) => {
     );
 };
 
-// ── CountdownBox ───────────────────────────────────────────────
+//TODO: ── CountdownBox ───────────────────────────────────────────────
 const CountdownBox = ({ schedule, timeLeft }) => {
     if (!timeLeft) return null;
 
@@ -116,8 +116,6 @@ const CountdownBox = ({ schedule, timeLeft }) => {
             background: timeLeft === "past" ? "rgba(248,113,113,0.06)" : "rgba(251,191,36,0.06)",
             animation: "rptFadeUp .4s cubic-bezier(.16,1,.3,1) both",
         }}>
-
-            {/* Label row */}
             <div style={{
                 display: "flex", alignItems: "center", gap: 8,
                 marginBottom: 16,
@@ -125,7 +123,6 @@ const CountdownBox = ({ schedule, timeLeft }) => {
                 textTransform: "uppercase",
                 color: timeLeft === "past" ? "#f87171" : "#fbbf24",
             }}>
-                {/* Pulse dot */}
                 {timeLeft !== "past" && (
                     <span style={{
                         width: 7, height: 7, borderRadius: "50%",
@@ -144,7 +141,6 @@ const CountdownBox = ({ schedule, timeLeft }) => {
                 </p>
             ) : (
                 <>
-                    {/* Tiles */}
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         {[
                             { value: pad(timeLeft.days), unit: "Days" },
@@ -185,8 +181,6 @@ const CountdownBox = ({ schedule, timeLeft }) => {
                             </React.Fragment>
                         ))}
                     </div>
-
-                    {/* Scheduled for */}
                     <p style={{ margin: "14px 0 0", fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
                         Scheduled for&nbsp;
                         <strong style={{ color: "rgba(255,255,255,0.6)" }}>
@@ -199,7 +193,7 @@ const CountdownBox = ({ schedule, timeLeft }) => {
     );
 };
 
-// ── Main Report component ──────────────────────────────────────
+//TODO: ── Main Report component ──────────────────────────────────────
 const Report = () => {
     const { reportList, getReportList, loading, error, EmailData } = serviceStore();
     const hasFetched = useRef(false);
@@ -214,37 +208,31 @@ const Report = () => {
             hasFetched.current = true;
             getReportList();
         }
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, []);
 
-    // ── Countdown ──────────────────────────────────────────────────
+    //TODO: ── Countdown ──────────────────────────────────────────────────
     const scheduleObj = EmailData?.schedule;
     const isScheduled = Boolean(scheduleObj?.date && scheduleObj?.time && scheduleObj?.status !== "completed");
 
     const targetDate = useMemo(() => {
         if (!isScheduled) return null;
-
-        // Normalize date → "YYYY-MM-DD"
         const rawDate = scheduleObj.date;
         const normalizedDate = rawDate.includes("T")
-            ? rawDate.split("T")[0]           // "2025-01-15T00:00:00Z" → "2025-01-15"
-            : rawDate;                         // "2025-01-15" → already fine
-
-        // Normalize time → "HH:MM"
+            ? rawDate.split("T")[0]
+            : rawDate;
         const rawTime = scheduleObj.time;
         const normalizedTime = rawTime.length > 5
-            ? rawTime.slice(0, 5)             // "14:30:00" → "14:30"
-            : rawTime;                         // "14:30"  → already fine
+            ? rawTime.slice(0, 5)
+            : rawTime;
 
         const combined = `${normalizedDate}T${normalizedTime}:00`;
         const parsed = new Date(combined);
 
-        // Return null if the date is invalid
         return isNaN(parsed.getTime()) ? null : combined;
 
     }, [isScheduled, scheduleObj?.date, scheduleObj?.time]);
 
     const timeLeft = useTimer(targetDate);
-    // console.log(timeLeft)
 
     const handleRefresh = async () => {
         setRefreshing(true);
@@ -322,7 +310,7 @@ const Report = () => {
                 .ra3{animation:rptFadeUp .6s .24s cubic-bezier(.16,1,.3,1) both}
                 .ra4{animation:rptFadeUp .6s .32s cubic-bezier(.16,1,.3,1) both}
 
-                /* Search */
+                /*TODO: Search */
                 .rpt-search-wrapper {
                     position: relative; border-radius: 14px;
                     background: rgba(255,255,255,0.02);
@@ -342,7 +330,7 @@ const Report = () => {
                 }
                 .rpt-search::placeholder { color: rgba(255,255,255,0.3); }
 
-                /* Table */
+                /*TODO: Table */
                 .rpt-table { width:100%; border-collapse:separate; border-spacing:0 8px; min-width:700px; }
                 .rpt-th {
                     padding: 0 20px 10px; font-size:11px; font-weight:600;
@@ -379,7 +367,7 @@ const Report = () => {
                     overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
                 }
 
-                /* Refresh button */
+                /*TODO: Refresh button */
                 .rpt-btn-refresh {
                     display:inline-flex; align-items:center; gap:8px;
                     background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.2);
@@ -393,7 +381,7 @@ const Report = () => {
                 }
                 .rpt-btn-refresh:disabled { opacity:.5; cursor:not-allowed; }
 
-                /* Stat card */
+                /*TODO: Stat card */
                 .rpt-stat-card {
                     background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);
                     border-radius:20px; padding:24px; display:flex; align-items:center;
@@ -409,7 +397,7 @@ const Report = () => {
                     display:flex; align-items:center; justify-content:center; flex-shrink:0;
                 }
 
-                /* Pagination */
+                /*TODO: Pagination */
                 .rpt-page-btn {
                     width:34px; height:34px; border-radius:10px;
                     display:inline-flex; align-items:center; justify-content:center;
@@ -443,7 +431,7 @@ const Report = () => {
             <div className="rpt-root">
                 <div style={{ position: "relative", zIndex: 1, flex: 1, display: "flex", flexDirection: "column", maxWidth: 1200, width: "100%", margin: "0 auto" }}>
 
-                    {/* ── Header ── */}
+                    {/*TODO: ── Header ── */}
                     <div className="ra0" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, marginBottom: 32 }}>
                         <div>
                             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
@@ -460,17 +448,16 @@ const Report = () => {
                         </button>
                     </div>
 
-                    {/* ── Countdown box ── */}
+                    {/*TODO: ── Countdown box ── */}
                     {isScheduled && targetDate && (
                         <div className="ra1">
                             <CountdownBox schedule={scheduleObj} timeLeft={timeLeft} />
                         </div>
                     )}
 
-                    {/* ── Stat cards ── */}
+                    {/*TODO: ── Stat cards ── */}
                     <div className="ra2 rpt-stat-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 20, marginBottom: 32 }}>
 
-                        {/* Total */}
                         <div className="rpt-stat-card">
                             <div className="rpt-stat-icon-wrap" style={{ background: "rgba(99,102,241,0.15)", color: "#818cf8", border: "1px solid rgba(99,102,241,0.2)" }}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
@@ -481,7 +468,6 @@ const Report = () => {
                             </div>
                         </div>
 
-                        {/* Success */}
                         <div className="rpt-stat-card">
                             <div className="rpt-stat-icon-wrap" style={{ background: "rgba(52,211,153,0.15)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" }}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
@@ -495,7 +481,6 @@ const Report = () => {
                             </div>
                         </div>
 
-                        {/* Failed */}
                         <div className="rpt-stat-card">
                             <div className="rpt-stat-icon-wrap" style={{ background: "rgba(248,113,113,0.15)", color: "#f87171", border: "1px solid rgba(248,113,113,0.2)" }}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" /></svg>
@@ -506,7 +491,6 @@ const Report = () => {
                             </div>
                         </div>
 
-                        {/* Pending */}
                         <div className="rpt-stat-card">
                             <div className="rpt-stat-icon-wrap" style={{ background: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.2)" }}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
@@ -518,7 +502,7 @@ const Report = () => {
                         </div>
                     </div>
 
-                    {/* ── Table Area ── */}
+                    {/*TODO: ── Table Area ── */}
                     <div className="ra3" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
 
                         {/* Toolbar */}
@@ -534,7 +518,6 @@ const Report = () => {
                             </span>
                         </div>
 
-                        {/* Loading */}
                         {loading && (
                             <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, minHeight: 300 }}>
                                 <div style={{ width: 40, height: 40, border: "3px solid rgba(99,102,241,0.1)", borderTopColor: "#6366f1", borderRadius: "50%", animation: "rptSpin 1s linear infinite" }} />
@@ -542,7 +525,6 @@ const Report = () => {
                             </div>
                         )}
 
-                        {/* Error */}
                         {!loading && error && (
                             <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 300, background: "rgba(248,113,113,0.05)", border: "1px dashed rgba(248,113,113,0.2)", borderRadius: 20 }}>
                                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 16 }}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
@@ -551,7 +533,6 @@ const Report = () => {
                             </div>
                         )}
 
-                        {/* Empty */}
                         {!loading && !error && filtered.length === 0 && (
                             <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 300, background: "rgba(255,255,255,0.01)", border: "1px dashed rgba(255,255,255,0.1)", borderRadius: 20 }}>
                                 <div style={{ width: 64, height: 64, borderRadius: 16, background: "rgba(255,255,255,0.03)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16, color: "rgba(255,255,255,0.3)" }}>
@@ -562,7 +543,7 @@ const Report = () => {
                             </div>
                         )}
 
-                        {/* Table */}
+                        {/*TODO: Table */}
                         {!loading && !error && filtered.length > 0 && (
                             <div className="ra4" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
                                 <div style={{ overflowX: "auto", paddingBottom: 16 }}>
@@ -615,7 +596,7 @@ const Report = () => {
                                     </table>
                                 </div>
 
-                                {/* Pagination */}
+                                {/*TODO: Pagination */}
                                 {totalPages > 1 && (
                                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "auto", paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
                                         <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>

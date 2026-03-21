@@ -33,7 +33,7 @@ export const composedController = async (req, res) => {
             });
         }
 
-        /* ---------- CREATE EMAIL MESSAGE ---------- */
+        /*TODO: ---------- CREATE EMAIL MESSAGE ---------- */
 
         const emailDoc = {
             subject,
@@ -48,18 +48,16 @@ export const composedController = async (req, res) => {
         emailInfo.emailMessages.push(emailDoc);
         const currentEmail = emailInfo.emailMessages.at(-1);
 
-        /* ---------- SCHEDULE LOGIC (FIXED) ---------- */
+        /*TODO: ---------- SCHEDULE LOGIC (FIXED) ---------- */
 
         if (scheduleDate || scheduleTime) {
 
-            // 1. Validate both fields are provided together
             if (!scheduleDate || !scheduleTime) {
                 return res.status(400).json({
                     message: "Both scheduleDate and scheduleTime are required for scheduling"
                 });
             }
 
-            // 2. Parse and validate the scheduled datetime
             const scheduledDateTime = new Date(`${scheduleDate}T${scheduleTime}`);
 
             if (isNaN(scheduledDateTime.getTime())) {
@@ -68,14 +66,12 @@ export const composedController = async (req, res) => {
                 });
             }
 
-            // 3. Ensure scheduled time is in the future
             if (scheduledDateTime <= new Date()) {
                 return res.status(400).json({
                     message: "Scheduled time must be in the future"
                 });
             }
 
-            // 4. Save schedule info with status
             emailInfo.schedule = {
                 date: scheduleDate,
                 time: scheduleTime,
@@ -85,7 +81,6 @@ export const composedController = async (req, res) => {
 
             await emailInfo.save();
 
-            // 5. Build cron expression from scheduled time
             const minutes = scheduledDateTime.getMinutes();
             const hours = scheduledDateTime.getHours();
             const day = scheduledDateTime.getDate();
@@ -93,7 +88,6 @@ export const composedController = async (req, res) => {
 
             const cronExpression = `${minutes} ${hours} ${day} ${month} *`;
 
-            // 6. Schedule and auto-destroy after run
             const task = cron.schedule(cronExpression, async () => {
                 try {
                     const freshEmailInfo = await EmailInfo.findOne({ userId });
@@ -132,7 +126,7 @@ export const composedController = async (req, res) => {
                 } catch (err) {
                     console.error("Scheduled email error:", err);
                 } finally {
-                    task.stop(); // Auto-destroy after execution
+                    task.stop();
                 }
             });
 
@@ -143,7 +137,7 @@ export const composedController = async (req, res) => {
             });
         }
 
-        /* ---------- SEND EMAILS IMMEDIATELY ---------- */
+        /*TODO: ---------- SEND EMAILS IMMEDIATELY ---------- */
 
         const results = await Promise.allSettled(
             currentEmail.recipients.map(r =>
