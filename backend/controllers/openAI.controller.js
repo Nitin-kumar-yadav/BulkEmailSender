@@ -52,7 +52,7 @@ Instructions:
         });
 
     } catch (err) {
-        console.error("OpenAI streaming error:", err);
+        console.error("OpenAI enhancement error:", err);
 
         if (!res.headersSent) {
             return res.status(500).json({
