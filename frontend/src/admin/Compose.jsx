@@ -14,11 +14,7 @@ const Compose = () => {
   const [toast, setToast] = useState({ show: false, message: "", success: true });
   const fileInputRef = useRef(null);
 
-  const handleAICorrect = async (field) => {
-    if (!formData[field].trim()) {
-      showToast(`Please enter some ${field} to correct.`, false);
-      return;
-    }
+    setIsAiLoading((prev) => ({ ...prev, [field]: true }));
     try {
       const res = await openAIController({ field, text: formData[field] });
       if (res?.data?.message) {
@@ -517,10 +513,10 @@ const Compose = () => {
 
                 {/* TODO: Temporary disabled */}
 
-                {/* <button className="cmp-ai-btn" onClick={(e) => { e.preventDefault(); handleAICorrect("subject"); }} disabled={isAiLoading.subject}>
+                <button className="cmp-ai-btn" onClick={(e) => { e.preventDefault(); handleAICorrect("subject"); }} disabled={isAiLoading.subject}>
                   {isAiLoading.subject ? <span className="cmp-ai-spinner" /> : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /></svg>}
                   {isAiLoading.subject ? "Fixing..." : "AI Correct"}
-                </button> */}
+                </button>
               </div>
               <input
                 type="text"
