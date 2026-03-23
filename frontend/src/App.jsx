@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { applySavedTheme } from "./theme/theme";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./screen/Home";

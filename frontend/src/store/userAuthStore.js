@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { mainUrl } from "../main";
+import { mainUrl } from "../config";
 
 axios.defaults.withCredentials = true;
 
@@ -19,9 +19,7 @@ export const useUserAuthStore = create((set, get) => ({
     checkAuth: async () => {
         set({ isCheckingAuth: true });
         try {
-            const res = await axios.get(`${mainUrl}/v1/api/checkAuth`, {
-                withCredentials: true,
-            });
+            const res = await axios.get(`${mainUrl}/v1/api/checkAuth`);
             set({ authUser: res.data });
         } catch (error) {
             console.error("Auth check failed:", error);
@@ -55,9 +53,7 @@ export const useUserAuthStore = create((set, get) => ({
     login: async (userData) => {
         set({ isLogin: true });
         try {
-            const loginPromise = axios.post(`${mainUrl}/v1/api/signin`, userData, {
-                withCredentials: true,
-            });
+            const loginPromise = axios.post(`${mainUrl}/v1/api/signin`, userData);
             const res = await toast.promise(loginPromise, {
                 loading: "Logging in...",
                 success: (resData) => resData?.data?.message || "Login successful",
@@ -81,8 +77,7 @@ export const useUserAuthStore = create((set, get) => ({
         try {
             const otpPromise = axios.post(
                 `${mainUrl}/v1/api/otp-verification?_id=${userId}`,
-                userData,
-                { withCredentials: true }
+                userData
             );
             const res = await toast.promise(otpPromise, {
                 loading: "Verifying OTP...",
@@ -104,8 +99,7 @@ export const useUserAuthStore = create((set, get) => ({
         try {
             const resendPromise = axios.post(
                 `${mainUrl}/v1/api/resend-otp?_id=${userId}`,
-                userData,
-                { withCredentials: true }
+                userData
             );
             await toast.promise(resendPromise, {
                 loading: "Resending OTP...",
@@ -122,9 +116,7 @@ export const useUserAuthStore = create((set, get) => ({
     /*TODO: ── logout ─────────────────────────────────────────────────────────── */
     logout: async () => {
         try {
-            const logoutPromise = axios.get(`${mainUrl}/v1/api/logout`, {
-                withCredentials: true,
-            });
+            const logoutPromise = axios.get(`${mainUrl}/v1/api/logout`);
             await toast.promise(logoutPromise, {
                 loading: "Logging out...",
                 success: (resData) => resData?.data?.message || "Logged out successfully",
@@ -153,9 +145,7 @@ export const useUserAuthStore = create((set, get) => ({
     },
     updateUserPassword: async (userData) => {
         try {
-            const updatePassPromise = axios.put(`${mainUrl}/v1/api/updatePassword`, userData, {
-                withCredentials: true,
-            });
+            const updatePassPromise = axios.put(`${mainUrl}/v1/api/updatePassword`, userData);
             await toast.promise(updatePassPromise, {
                 loading: "Updating password...",
                 success: (resData) => resData?.data?.message || "Password updated successfully",

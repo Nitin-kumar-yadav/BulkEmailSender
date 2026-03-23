@@ -3,7 +3,6 @@ import { motion, useInView } from 'framer-motion';
 
 /*TODO:  ── Footer Styles ── */
 const globalStyles = `
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
   @keyframes scanline {
     0%   { transform: translateY(-100%); }

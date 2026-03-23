@@ -1,6 +1,6 @@
 import axios from "axios";
 import { create } from "zustand";
-import { mainUrl } from "../main";
+import { mainUrl } from "../config";
 import toast from "react-hot-toast";
 
 export const serviceStore = create((set) => ({

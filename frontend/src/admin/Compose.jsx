@@ -87,7 +87,6 @@ const Compose = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap');
 
         /*TODO: ── Reset ── */
         .cmp-root, .cmp-root *, .cmp-root *::before, .cmp-root *::after {

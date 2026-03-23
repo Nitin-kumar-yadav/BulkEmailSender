@@ -3,7 +3,6 @@ import { motion, useInView } from 'framer-motion';
 
 /*TODO: ── 3D TILT + MAGNETIC GLOW PRICING CARDS ── */
 const globalStyles = `
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
   @keyframes shimmer {
     0%   { background-position: -200% center; }

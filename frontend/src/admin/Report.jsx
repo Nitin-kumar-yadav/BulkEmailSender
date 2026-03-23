@@ -281,7 +281,6 @@ const Report = () => {
     return (
         <>
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400&display=swap');
 
                 .rpt-root, .rpt-root *, .rpt-root *::before, .rpt-root *::after { box-sizing: border-box; }
 
